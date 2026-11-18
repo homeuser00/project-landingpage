@@ -1,0 +1,1339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MYFutureJobs Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: white utility header, navy hero band, light-blue page ground with white working panels; orange reserved for primary actions. */
+:root{
+  --navy:#0E2A5C; --navy-2:#163A7A; --blue:#1F5FC4; --blue-soft:#E8F0FC;
+  --orange:#F7941D; --orange-d:#D97706; --orange-soft:#FEF1E1;
+  --ink:#14213D; --muted:#56657F; --line:#D8E1EE; --ground:#F4F7FC; --card:#FFFFFF;
+  --ok:#17855A; --ok-soft:#E5F5EE; --bad:#C2372C; --bad-soft:#FBEAE8;
+  --f-display:"Poppins","Segoe UI",system-ui,sans-serif;
+  --f-body:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+  --r:10px; --wrap:1200px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ground);color:var(--ink);font:15px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.2;margin:0;text-wrap:balance;color:var(--navy)}
+h1{font-size:clamp(28px,4.2vw,46px);font-weight:700}
+h2{font-size:clamp(22px,2.6vw,30px);font-weight:600}
+h3{font-size:18px;font-weight:600}
+h4{font-size:15px;font-weight:600}
+p{margin:0}
+a{color:var(--blue)}
+button,input,select,textarea{font:inherit;color:inherit}
+img{max-width:100%}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.ic{flex:none;vertical-align:middle}
+.wrap{max-width:var(--wrap);margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px;border-radius:4px}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:8px;padding:10px 18px;font-weight:600;font-size:14px;cursor:pointer;text-decoration:none;white-space:nowrap;transition:background .15s,border-color .15s,color .15s}
+.btn-orange{background:var(--orange);color:#1E1300}
+.btn-orange:hover{background:var(--orange-d);color:#fff}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{background:var(--navy-2)}
+.btn-ghost{background:var(--card);border-color:var(--line);color:var(--navy)}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+.btn-link{background:none;border:0;padding:0;color:var(--blue);font-weight:600;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.btn-link:hover{text-decoration:underline}
+.btn-sm{padding:7px 12px;font-size:13px}
+.btn-block{width:100%}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+
+/* ---------- header ---------- */
+.proto{background:var(--navy);color:#C9D6EE;font-size:12.5px}
+.proto .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:6px;flex-wrap:wrap}
+.proto b{color:#fff;font-weight:600}
+.aud{display:inline-flex;background:rgba(255,255,255,.08);border-radius:999px;padding:3px}
+.aud button{border:0;background:none;color:#C9D6EE;padding:4px 14px;border-radius:999px;cursor:pointer;font-size:12.5px;font-weight:600}
+.aud button[aria-pressed="true"]{background:var(--orange);color:#1E1300}
+header.site{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--card);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:41;background:var(--card)}
+.hbar{display:flex;align-items:center;gap:20px;min-height:66px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex:none;border:0;background:none;cursor:pointer;padding:0}
+.logo-mark{width:36px;height:36px;border-radius:9px;background:var(--navy);display:grid;place-items:center;position:relative;overflow:hidden}
+.logo-mark::after{content:"";position:absolute;width:40px;height:40px;border-radius:50%;border:6px solid var(--orange);left:12px;top:14px}
+.logo-mark span{position:relative;z-index:1;color:#fff;font:700 13px var(--f-display)}
+.logo-text{font:700 19px var(--f-display);color:var(--navy);letter-spacing:-.2px}
+.logo-text em{font-style:normal;color:var(--orange)}
+.logo-sub{display:block;font:500 10.5px var(--f-body);color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin-top:-3px}
+nav.main{display:flex;align-items:center;gap:2px;flex:1;min-width:0}
+nav.main a,nav.main button.nl{color:var(--ink);text-decoration:none;font-weight:500;font-size:14px;padding:8px 10px;border-radius:6px;border:0;background:none;cursor:pointer;white-space:nowrap}
+nav.main a:hover,nav.main button.nl:hover{background:var(--blue-soft);color:var(--blue)}
+nav.main a.on{color:var(--blue);box-shadow:inset 0 -2px 0 var(--orange);border-radius:0}
+.more{position:relative}
+.more-menu{position:absolute;top:calc(100% + 6px);left:0;background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 12px 30px rgba(14,42,92,.14);padding:6px;min-width:230px;display:grid}
+.more-menu a{display:block}
+.hright{display:flex;align-items:center;gap:10px;margin-left:auto}
+.userchip{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 4px;background:var(--card);cursor:pointer}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font:600 12px var(--f-display)}
+.userchip small{display:block;color:var(--muted);font-size:11px;line-height:1.1}
+.userchip strong{display:block;font-size:13px;line-height:1.2}
+.hamb{display:none;border:1px solid var(--line);background:var(--card);border-radius:8px;width:40px;height:40px;cursor:pointer;align-items:center;justify-content:center;color:var(--navy)}
+@media (max-width:1100px){
+  .hamb{display:inline-flex}
+  nav.main{display:none;position:absolute;left:0;right:0;top:100%;background:var(--card);border-bottom:1px solid var(--line);flex-direction:column;align-items:stretch;padding:8px max(16px,env(safe-area-inset-right,0px)) 14px max(16px,env(safe-area-inset-left,0px));box-shadow:0 14px 24px rgba(14,42,92,.1)}
+  nav.main.open{display:flex}
+  nav.main a.on{box-shadow:inset 3px 0 0 var(--orange)}
+  .more-menu{position:static;box-shadow:none;border:0;padding:0 0 0 12px}
+  .more > button.nl{display:none}
+  .more-menu[hidden]{display:grid!important}
+}
+@media (max-width:560px){ .logo-sub{display:none} .userchip small{display:none} .hright .btn-ghost{display:none} }
+
+/* ---------- generic sections ---------- */
+main{min-height:60vh}
+.sec{padding-block:56px}
+.sec-tight{padding-block:36px}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.sec-head p{color:var(--muted);max-width:62ch;margin-top:6px}
+.eyebrow{font:600 12px var(--f-body);letter-spacing:1.2px;text-transform:uppercase;color:var(--orange-d)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:960px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.g2,.g3,.g4{grid-template-columns:minmax(0,1fr)}}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--blue-soft);color:var(--blue);white-space:nowrap}
+.tag.or{background:var(--orange-soft);color:#9A5200}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.tag.gr{background:var(--ground);color:var(--muted);border:1px solid var(--line)}
+.crumbs{font-size:13px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.crumbs button{background:none;border:0;padding:0;color:var(--blue);cursor:pointer;font-size:13px}
+.pagehead{background:var(--navy);color:#DCE6F7;padding-block:34px 38px;position:relative;overflow:hidden}
+.pagehead::after{content:"";position:absolute;right:-90px;top:-140px;width:380px;height:380px;border-radius:50%;border:56px solid rgba(247,148,29,.18)}
+.pagehead h1{color:#fff;font-size:clamp(26px,3.4vw,38px);margin-top:10px}
+.pagehead p.lead{max-width:62ch;margin-top:10px;color:#C9D6EE}
+.pagehead .crumbs{color:#9FB3D6}
+.pagehead .crumbs button{color:#fff}
+.pagehead .wrap{position:relative;z-index:1}
+
+/* ---------- hero ---------- */
+.hero{background:var(--navy);color:#DCE6F7;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;width:620px;height:620px;border-radius:50%;border:90px solid rgba(247,148,29,.14);right:-200px;bottom:-330px}
+.hero::after{content:"";position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(31,95,196,.35);left:-120px;top:-150px}
+.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:40px;padding-block:56px 64px;align-items:center}
+.hero h1{color:#fff}
+.hero h1 span{color:var(--orange)}
+.hero .lead{font-size:17px;color:#C9D6EE;margin-top:14px;max-width:56ch}
+.searchbar{margin-top:26px;background:var(--card);border-radius:12px;padding:8px;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) auto;gap:8px;box-shadow:0 18px 40px rgba(0,0,0,.25)}
+.searchbar .fld{display:flex;align-items:center;gap:8px;padding:0 12px;border-radius:8px;background:var(--ground);color:var(--muted);min-width:0}
+.searchbar input,.searchbar select{border:0;background:none;outline:none;width:100%;min-width:0;padding:12px 0;color:var(--ink)}
+.searchbar .btn{padding-inline:22px}
+@media (max-width:720px){.searchbar{grid-template-columns:minmax(0,1fr)} .hero-grid{grid-template-columns:minmax(0,1fr);gap:28px;padding-block:40px 48px}}
+.pop{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;align-items:center;font-size:13px;color:#9FB3D6}
+.pop button{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:4px 12px;cursor:pointer;font-size:13px}
+.pop button:hover{background:rgba(255,255,255,.18)}
+.ai-card{background:var(--card);color:var(--ink);border-radius:14px;padding:24px;box-shadow:0 18px 40px rgba(0,0,0,.25);position:relative}
+.ai-badge{display:inline-flex;align-items:center;gap:6px;background:var(--orange);color:#1E1300;font-weight:700;font-size:12px;padding:4px 10px;border-radius:999px}
+.ai-card h3{margin-top:12px;font-size:21px}
+.ai-steps{list-style:none;padding:0;margin:16px 0 18px;display:grid;gap:10px}
+.ai-steps li{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.ai-steps li span{flex:none;width:24px;height:24px;border-radius:50%;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center;font:600 12px var(--f-display)}
+.drop-mini{border:2px dashed var(--line);border-radius:10px;padding:14px;text-align:center;color:var(--muted);font-size:13px;margin-bottom:12px}
+
+/* ---------- quick access ---------- */
+.quick{margin-top:-30px;position:relative;z-index:2}
+.quick-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 28px rgba(14,42,92,.08);overflow:hidden}
+.qa{display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 8px;border:0;background:none;cursor:pointer;text-align:center;font-size:13px;font-weight:600;color:var(--navy);border-right:1px solid var(--line)}
+.qa:last-child{border-right:0}
+.qa:hover{background:var(--blue-soft)}
+.qa .ib{width:44px;height:44px;border-radius:12px;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center}
+.qa:hover .ib{background:var(--blue);color:#fff}
+@media (max-width:960px){.quick-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.qa{border-bottom:1px solid var(--line)}}
+@media (max-width:520px){.quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* ---------- trending ---------- */
+.trend-list{list-style:none;margin:0;padding:0}
+.trend-list li{border-bottom:1px solid var(--line)}
+.trend-list li:last-child{border-bottom:0}
+.trend-list button{width:100%;display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 18px;border:0;background:none;cursor:pointer;text-align:left}
+.trend-list button:hover{background:var(--blue-soft)}
+.rank{font:600 14px var(--f-display);color:var(--muted);font-variant-numeric:tabular-nums}
+.trend-list .t{font-weight:600;color:var(--navy)}
+.trend-list .s{font-size:12.5px;color:var(--muted)}
+.up{color:var(--ok);font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.ind-bars{display:grid;gap:4px;padding:10px 0}
+.ind{display:grid;grid-template-columns:minmax(0,190px) minmax(0,1fr) 70px;gap:12px;align-items:center;padding:8px 18px;border:0;background:none;cursor:pointer;text-align:left;font-size:13.5px}
+.ind:hover{background:var(--blue-soft)}
+.ind .bar{height:10px;background:var(--blue-soft);border-radius:999px;overflow:hidden}
+.ind .bar i{display:block;height:100%;background:var(--blue);border-radius:999px}
+.ind:hover .bar i{background:var(--orange)}
+.ind .n{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);font-size:12.5px}
+@media (max-width:520px){.ind{grid-template-columns:minmax(0,1fr) 64px}.ind .bar{grid-column:1/-1;grid-row:2}}
+.phead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}
+
+/* ---------- cards ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card .ib{width:42px;height:42px;border-radius:10px;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center}
+.card .foot{margin-top:auto;padding-top:6px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.card.click{cursor:pointer;transition:border-color .15s,transform .15s}
+.card.click:hover{border-color:var(--blue);transform:translateY(-2px)}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
+.meta span{display:inline-flex;align-items:center;gap:5px}
+.band{background:var(--card);border-block:1px solid var(--line)}
+.band-navy{background:var(--navy);color:#DCE6F7}
+.band-navy h2{color:#fff}
+.band-navy .sec-head p{color:#C9D6EE}
+
+/* career journey */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.tabs button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 16px;font-weight:600;font-size:14px;cursor:pointer;color:var(--navy)}
+.tabs button[aria-selected="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.path{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:18px;position:relative}
+@media (max-width:760px){.path{grid-template-columns:minmax(0,1fr)}}
+
+/* fair date tile */
+.date{flex:none;width:58px;border-radius:10px;overflow:hidden;text-align:center;border:1px solid var(--line);background:var(--card)}
+.date b{display:block;background:var(--orange);color:#1E1300;font:600 11px var(--f-body);letter-spacing:1px;padding:3px 0}
+.date strong{display:block;font:700 22px/1.3 var(--f-display);color:var(--navy);padding:4px 0}
+.fair-row{display:flex;gap:16px;align-items:flex-start}
+
+/* partners */
+.partners{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.partners{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.partner{border:1px solid var(--line);background:var(--card);border-radius:var(--r);padding:20px;cursor:pointer;display:flex;flex-direction:column;gap:10px;text-align:left}
+.partner:hover{border-color:var(--blue)}
+.pl{height:48px;display:flex;align-items:center;font:700 22px var(--f-display);letter-spacing:-.5px}
+
+/* ---------- search results ---------- */
+.res-layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:860px){.res-layout{grid-template-columns:minmax(0,1fr)}}
+.filters{padding:18px;display:grid;gap:16px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 82px)}
+@media (max-width:860px){.filters{position:static}}
+.f label,.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--navy)}
+.inp,.f select,.f input{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--card);outline:none}
+.inp:focus,.f select:focus,.f input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
+textarea.inp{min-height:90px;resize:vertical}
+.field{display:grid;gap:0}
+.field .err{color:var(--bad);font-size:12.5px;margin-top:5px}
+.inp.bad{border-color:var(--bad)}
+.job{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:16px;align-items:start;padding:18px 20px}
+.job + .job{border-top:1px solid var(--line)}
+.clogo{width:48px;height:48px;border-radius:10px;display:grid;place-items:center;font:700 16px var(--f-display);color:#fff}
+.job h3{font-size:16.5px}
+.job h3 button{all:unset;cursor:pointer;color:var(--navy)}
+.job h3 button:hover{color:var(--blue);text-decoration:underline}
+.job .co{font-size:14px;color:var(--muted);margin-top:2px}
+.job .acts{display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.sal{font-weight:600;color:var(--navy);font-variant-numeric:tabular-nums}
+.skills{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+@media (max-width:620px){.job{grid-template-columns:40px minmax(0,1fr)}.clogo{width:40px;height:40px;font-size:14px}.job .acts{grid-column:1/-1;flex-direction:row}}
+.match{font:700 15px var(--f-display);color:var(--ok);font-variant-numeric:tabular-nums}
+.match small{display:block;font:500 11px var(--f-body);color:var(--muted)}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 20px;border-bottom:1px solid var(--line)}
+.toolbar select{border:1px solid var(--line);border-radius:8px;padding:7px 10px;background:var(--card)}
+.empty{padding:48px 20px;text-align:center;color:var(--muted);display:grid;gap:12px;justify-items:center}
+
+/* ---------- AI flow ---------- */
+.stepper{display:flex;gap:0;list-style:none;padding:0;margin:0 0 26px;overflow-x:auto}
+.stepper li{flex:1;min-width:120px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--muted);font-weight:500;padding-right:10px}
+.stepper li i{display:block;height:4px;border-radius:999px;background:var(--line)}
+.stepper li.done i{background:var(--blue)}
+.stepper li.now i{background:var(--orange)}
+.stepper li.now{color:var(--navy);font-weight:600}
+.drop{border:2px dashed #AFC3E3;border-radius:14px;background:var(--blue-soft);padding:40px 20px;text-align:center;display:grid;gap:12px;justify-items:center;cursor:pointer;transition:background .15s,border-color .15s}
+.drop.over{background:#D6E4FA;border-color:var(--blue)}
+.drop .ib{width:60px;height:60px;border-radius:50%;background:var(--card);color:var(--blue);display:grid;place-items:center}
+.alert{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:10px;font-size:14px}
+.alert.bad{background:var(--bad-soft);color:#7E1F17;border:1px solid #F1C4BF}
+.alert.ok{background:var(--ok-soft);color:#0D5A3C;border:1px solid #BEE5D3}
+.alert.info{background:var(--blue-soft);color:var(--navy);border:1px solid #C7D7F1}
+.progress{height:8px;border-radius:999px;background:var(--blue-soft);overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:var(--orange);border-radius:999px;transition:width .4s ease}
+.scan-list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.scan-list li{display:flex;gap:10px;align-items:center;font-size:14px;color:var(--muted)}
+.scan-list li.done{color:var(--ink)}
+.scan-list li .dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;flex:none}
+.scan-list li.done .dot{background:var(--ok);border-color:var(--ok);color:#fff}
+.scan-list li.run .dot{border-color:var(--orange);border-top-color:transparent;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.chip-x{display:inline-flex;align-items:center;gap:4px;background:var(--blue-soft);color:var(--blue);border-radius:999px;padding:4px 6px 4px 11px;font-size:13px;font-weight:600}
+.chip-x button{border:0;background:none;color:inherit;cursor:pointer;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;padding:0}
+.chip-x button:hover{background:rgba(31,95,196,.15)}
+
+/* ---------- MYCEC booking ---------- */
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.slot{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:9px 6px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;color:var(--navy)}
+.slot small{display:block;font-weight:500;color:var(--muted);font-size:11.5px}
+.slot:hover{border-color:var(--blue)}
+.slot[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+.slot[aria-pressed="true"] small{color:#D5E3FA}
+.slot:disabled{background:var(--ground);color:#A5B0C3;cursor:not-allowed;text-decoration:line-through}
+.choice{border:2px solid var(--line);border-radius:14px;background:var(--card);padding:24px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:10px}
+.choice:hover,.choice[aria-pressed="true"]{border-color:var(--blue)}
+.choice[aria-pressed="true"]{box-shadow:0 0 0 4px var(--blue-soft)}
+.choice .ib{width:52px;height:52px;border-radius:12px;background:var(--orange-soft);color:var(--orange-d);display:grid;place-items:center}
+
+/* ---------- employer ---------- */
+.stat{padding:22px;border-radius:var(--r);background:var(--card);border:1px solid var(--line)}
+.stat .v{font:700 clamp(24px,2.6vw,32px) var(--f-display);color:var(--navy);font-variant-numeric:tabular-nums;margin-top:6px}
+.stat .l{font-size:13px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.6px}
+.stat .d{font-size:12.5px;color:var(--ok);font-weight:600;margin-top:4px}
+.quote{font-size:15.5px;color:var(--ink)}
+.quote::before{content:"\201C";font:700 44px/0.6 var(--f-display);color:var(--orange);display:block;margin:10px 0 6px}
+
+/* ---------- modal / toast ---------- */
+.modal-bg{position:fixed;inset:0;background:rgba(9,22,48,.55);z-index:100;display:grid;place-items:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px));overflow-y:auto}
+.modal{background:var(--card);border-radius:14px;width:min(520px,100%);box-shadow:0 30px 70px rgba(0,0,0,.3);position:relative;animation:pop .18s ease-out}
+.modal.wide{width:min(720px,100%)}
+@keyframes pop{from{transform:translateY(8px);opacity:.6}}
+.mh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:20px 22px 0}
+.mb{padding:16px 22px 22px;display:grid;gap:14px}
+.mx{border:0;background:var(--ground);width:34px;height:34px;border-radius:50%;cursor:pointer;display:grid;place-items:center;color:var(--muted);flex:none}
+.mx:hover{background:var(--blue-soft);color:var(--blue)}
+.mfoot{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.ext{display:flex;gap:12px;align-items:center;padding:14px;border-radius:10px;background:var(--ground);border:1px solid var(--line)}
+.ext .ib{width:44px;height:44px;border-radius:10px;background:var(--navy);color:#fff;display:grid;place-items:center;flex:none}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--ground);border-radius:10px;padding:4px}
+.auth-tabs button{border:0;background:none;padding:9px;border-radius:7px;font-weight:600;cursor:pointer;color:var(--muted)}
+.auth-tabs button[aria-selected="true"]{background:var(--card);color:var(--navy);box-shadow:0 1px 3px rgba(14,42,92,.12)}
+.big-ok{width:64px;height:64px;border-radius:50%;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center;margin:0 auto}
+.center{text-align:center}
+.toasts{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:120;display:grid;gap:8px;max-width:min(380px,calc(100vw - 32px))}
+.toast{background:var(--navy);color:#fff;padding:12px 16px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:14px;display:flex;gap:10px;align-items:center;animation:pop .2s ease-out}
+.toast .ic{color:var(--orange)}
+.fab{position:fixed;left:max(16px,env(safe-area-inset-left,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:90;background:var(--card);border:1px solid var(--line);color:var(--navy);border-radius:999px;padding:10px 16px;font-weight:600;font-size:13px;cursor:pointer;box-shadow:0 8px 24px rgba(14,42,92,.15);display:flex;gap:8px;align-items:center}
+.fab:hover{border-color:var(--blue);color:var(--blue)}
+.flow-list{display:grid;gap:4px;max-height:60vh;overflow-y:auto}
+.flow-list button{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;text-align:left;border:0;background:none;padding:10px 12px;border-radius:8px;cursor:pointer}
+.flow-list button:hover{background:var(--blue-soft)}
+.flow-list b{display:block;color:var(--navy);font-size:14px}
+.flow-list span{font-size:12.5px;color:var(--muted)}
+.flow-grp{font:600 11.5px var(--f-body);letter-spacing:1px;text-transform:uppercase;color:var(--orange-d);padding:10px 12px 2px}
+
+/* footer */
+footer{background:var(--navy);color:#AFC0DE;margin-top:0}
+footer .wrap{padding-block:44px 30px}
+.fgrid{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:28px}
+@media (max-width:760px){.fgrid{grid-template-columns:1fr 1fr}}
+footer h4{color:#fff;font-size:14px;margin-bottom:10px}
+footer ul{list-style:none;margin:0;padding:0;display:grid;gap:7px;font-size:13.5px}
+footer button{all:unset;cursor:pointer}
+footer button:hover{color:#fff;text-decoration:underline}
+.fbase{border-top:1px solid rgba(255,255,255,.12);margin-top:30px;padding-top:18px;font-size:12.5px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+footer .logo-text{color:#fff}
+
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+@media (max-width:860px){.two{grid-template-columns:minmax(0,1fr)}}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 16px;font-size:14px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-weight:500}
+ul.ticks{list-style:none;padding:0;margin:0;display:grid;gap:8px;font-size:14px}
+ul.ticks li{display:flex;gap:8px;align-items:flex-start}
+ul.ticks li .ic{color:var(--ok);margin-top:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<div class="proto">
+  <div class="wrap">
+    <span><b>Prototype</b> · Clickable mock built from the MYFutureJobs user flow. Not the official website.</span>
+    <div class="aud" role="group" aria-label="Choose audience">
+      <button type="button" data-act="aud" data-to="home" id="audJS" aria-pressed="true">Jobseeker</button>
+      <button type="button" data-act="aud" data-to="employer" id="audEM" aria-pressed="false">Employer</button>
+    </div>
+  </div>
+</div>
+
+<header class="site">
+  <div class="wrap hbar">
+    <button class="logo" type="button" data-go="home" aria-label="MYFutureJobs home">
+      <span class="logo-mark"><span>MY</span></span>
+      <span><span class="logo-text">MY<em>Future</em>Jobs</span><span class="logo-sub" id="logoSub">Jobseeker</span></span>
+    </button>
+    <nav class="main" id="nav" aria-label="Main"></nav>
+    <div class="hright" id="hright"></div>
+    <button class="hamb" type="button" id="hamb" aria-label="Open menu" aria-expanded="false"></button>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <div class="logo" style="cursor:default"><span class="logo-mark"><span>MY</span></span><span class="logo-text">MY<em>Future</em>Jobs</span></div>
+        <p style="margin-top:12px;font-size:13.5px;max-width:36ch">The national employment portal connecting jobseekers, employers and training providers across Malaysia.</p>
+      </div>
+      <div><h4>Jobseekers</h4><ul>
+        <li><button data-go="search">Find jobs</button></li>
+        <li><button data-go="ai">AI Job Recommendation</button></li>
+        <li><button data-go="career-journey">Career Journey</button></li>
+        <li><button data-go="career-fair">Career Fair</button></li>
+        <li><button data-go="training">Training</button></li>
+      </ul></div>
+      <div><h4>Employers</h4><ul>
+        <li><button data-go="employer">Employer homepage</button></li>
+        <li><button data-act="redir" data-name="Employer Portal">Employer Portal</button></li>
+        <li><button data-go="employer" data-scroll="support">Recruitment Support</button></li>
+        <li><button data-go="employer" data-scroll="incentives">Incentive Programmes</button></li>
+      </ul></div>
+      <div><h4>More</h4><ul>
+        <li><button data-go="mycec">MYCEC</button></li>
+        <li><button data-go="insight">MYFutureJobs Insight</button></li>
+        <li><button data-go="collaboration">Collaboration</button></li>
+        <li><button data-go="initiatives">Initiatives</button></li>
+      </ul></div>
+    </div>
+    <div class="fbase"><span>Prototype for user-flow testing. All jobs, events, people and figures are sample data.</span><span>myfuturejobs.gov.my · EN</span></div>
+  </div>
+</footer>
+
+<button class="fab" type="button" data-act="flows"></button>
+<div class="modal-bg" id="modalBg" hidden><div class="modal" id="modal" role="dialog" aria-modal="true"></div></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>
+/* ================= icons ================= */
+const P={
+search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+upload:'<path d="M12 15V4m0 0-4 4m4-4 4 4"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/>',
+spark:'<path d="M11 3l1.8 4.7 4.7 1.8-4.7 1.8L11 16l-1.8-4.7L4.5 9.5l4.7-1.8z"/><path d="M18.5 14l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/>',
+brief:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/>',
+cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>',
+pin:'<path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+cap:'<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5M22 9v6"/>',
+bld:'<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1M10 21v-3h4v3"/>',
+chart:'<path d="M4 20V4M4 20h16"/><path d="M8 16v-5M12 16V8M16 16v-3"/>',
+users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14c2 .8 3.5 3 3.5 6"/>',
+link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+back:'<path d="M19 12H5M11 6l-6 6 6 6"/>',
+x:'<path d="M6 6l12 12M18 6 6 18"/>',
+check:'<path d="M5 12.5l4.5 4.5L19 7"/>',
+menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
+user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/>',
+book:'<path d="M4 5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M8 7h8"/>',
+compass:'<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+vr:'<path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-4l-3-3-3 3H5a2 2 0 0 1-2-2z"/><circle cx="8" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/>',
+shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+ext:'<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+trend:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+file:'<path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>',
+alert:'<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/>',
+door:'<path d="M14 3h5a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1h-5"/><path d="M3 12h11M10 8l4 4-4 4"/>',
+map:'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>',
+star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
+gift:'<rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v8h14v-8M12 8v13M12 8c-2-4-6-4-6-1.5S10 8 12 8zm0 0c2-4 6-4 6-1.5S14 8 12 8z"/>',
+route:'<circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h8a3 3 0 0 0 0-6H8a3 3 0 0 1 0-6h8"/>'
+};
+const ic=(n,s=20)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]||''}</svg>`;
+
+/* ================= sample data ================= */
+const IND={ict:'Information & Communication',mfg:'Manufacturing',ret:'Wholesale & Retail Trade',con:'Construction',fnb:'Accommodation & Food Service',trn:'Transportation & Storage',fin:'Finance & Insurance',hlt:'Human Health & Social Work',edu:'Education',pro:'Professional, Scientific & Technical'};
+const IND_COUNT={mfg:58210,ret:41380,ict:33870,con:29540,fnb:27110,trn:21960,pro:18430,fin:14200,hlt:12940,edu:9870};
+const CO={
+ nexa:{n:'Nexa Digital Sdn Bhd',c:'#1F5FC4'}, mercu:{n:'Mercu Analytics Sdn Bhd',c:'#6A3FB5'}, pin:{n:'Pinnacle Electronics (M) Sdn Bhd',c:'#0E7C86'},
+ sinar:{n:'Sinar Telco Berhad',c:'#C2372C'}, lest:{n:'Lestari Holdings Berhad',c:'#17855A'}, hsd:{n:'Hospital Seri Damai',c:'#2C7BB6'},
+ kedai:{n:'KedaiMart Retail Sdn Bhd',c:'#D97706'}, bina:{n:'Bina Teguh Construction Sdn Bhd',c:'#7A5A2E'}, kuasa:{n:'Kuasa Jaya Services',c:'#B8860B'},
+ laguna:{n:'Laguna Bay Resort Langkawi',c:'#0B8F8C'}, gerak:{n:'Gerak Logistics Sdn Bhd',c:'#0E2A5C'}, akad:{n:'Akademi Cemerlang',c:'#8E44AD'},
+ warna:{n:'Studio Warna Creative',c:'#D6457A'}, auto:{n:'AutoPrima Motors Sdn Bhd',c:'#3C4A63'}, payung:{n:'Payung Insurans Berhad',c:'#2E8B57'},
+ awan:{n:'Awan Tech Solutions',c:'#1C9AD6'}, kopi:{n:'Kopi Pagi Café',c:'#6F4E37'}, bestari:{n:'Kolej Bestari',c:'#5A6ACF'}
+};
+const J=[
+ [1,'Software Developer','nexa','Kuala Lumpur','W.P. Kuala Lumpur','ict',5000,8000,'Full-time',['JavaScript','React','SQL','Git'],2],
+ [2,'Data Analyst','mercu','Cyberjaya','Selangor','ict',4500,7000,'Full-time',['SQL','Python','Excel','Power BI'],1],
+ [3,'Production Operator','pin','Bayan Lepas','Pulau Pinang','mfg',1800,2400,'Full-time',['Machine operation','Quality checks','Shift work'],3],
+ [4,'Quality Control Technician','pin','Kulim','Kedah','mfg',2500,3500,'Full-time',['Quality checks','ISO 9001','Excel'],5],
+ [5,'Customer Service Executive','sinar','Petaling Jaya','Selangor','ict',2600,3400,'Full-time',['Communication','CRM','Customer service','English'],1],
+ [6,'Accountant','lest','Shah Alam','Selangor','fin',4000,6000,'Full-time',['Accounting','MFRS','Excel','SQL Account'],4],
+ [7,'Registered Nurse','hsd','Johor Bahru','Johor','hlt',3200,4800,'Full-time',['Patient care','BLS','Communication'],2],
+ [8,'Retail Store Supervisor','kedai','Seremban','Negeri Sembilan','ret',2800,3600,'Full-time',['Retail operations','Inventory','Team leadership','Customer service'],6],
+ [9,'Site Engineer','bina','Kuala Lumpur','W.P. Kuala Lumpur','con',4000,5500,'Contract',['AutoCAD','Site supervision','Safety'],3],
+ [10,'Electrician (Chargeman)','kuasa','Ipoh','Perak','con',2500,3800,'Full-time',['Electrical wiring','Safety'],7],
+ [11,'Chef de Partie','laguna','Langkawi','Kedah','fnb',2800,3800,'Full-time',['Food preparation','Food safety','Team leadership'],2],
+ [12,'Warehouse Assistant','gerak','Klang','Selangor','trn',1900,2500,'Full-time',['Forklift','Inventory','Shift work'],1],
+ [13,'Logistics Coordinator','gerak','Port Klang','Selangor','trn',3000,4200,'Full-time',['Logistics','Excel','Communication'],4],
+ [14,'Science Teacher','akad','Kuching','Sarawak','edu',3000,4500,'Full-time',['Teaching','Communication','Microsoft Office'],8],
+ [15,'Graphic Designer','warna','Kuala Lumpur','W.P. Kuala Lumpur','pro',3000,4500,'Full-time',['Adobe Illustrator','Photoshop','Figma'],2],
+ [16,'Digital Marketing Executive','lest','Petaling Jaya','Selangor','pro',3500,5000,'Full-time',['SEO','Social media','Google Ads','Copywriting'],3],
+ [17,'Sales Executive','auto','Kota Kinabalu','Sabah','ret',2500,5000,'Full-time',['Sales','Negotiation','Communication','Customer service'],1],
+ [18,'Insurance Claims Officer','payung','Kuala Lumpur','W.P. Kuala Lumpur','fin',3200,4200,'Full-time',['Claims processing','Excel','Communication'],5],
+ [19,'Mobile App Developer','nexa','Cyberjaya','Selangor','ict',5500,9000,'Full-time',['Flutter','Kotlin','Git','JavaScript'],2],
+ [20,'HR Executive','pin','Bayan Lepas','Pulau Pinang','mfg',3500,4800,'Full-time',['Recruitment','Payroll','Employment Act','Microsoft Office'],6],
+ [21,'Cloud Support Engineer','awan','Kuala Lumpur','W.P. Kuala Lumpur','ict',6000,9000,'Full-time',['AWS','Linux','Networking','Python'],1],
+ [22,'Barista','kopi','Melaka','Melaka','fnb',1800,2300,'Part-time',['Coffee preparation','Customer service','Food safety'],3],
+ [23,'Lorry Driver (GDL)','gerak','Shah Alam','Selangor','trn',2200,3000,'Full-time',['GDL licence','Logistics'],2],
+ [24,'Medical Lab Technologist','hsd','Johor Bahru','Johor','hlt',3000,4200,'Full-time',['Lab testing','Sample handling','Microsoft Office'],9],
+ [25,'Lecturer (Computer Science)','bestari','Kuantan','Pahang','edu',4500,6500,'Contract',['Python','Teaching','SQL'],4],
+ [26,'Admin Assistant','bina','Kuala Lumpur','W.P. Kuala Lumpur','con',2200,2800,'Full-time',['Microsoft Office','Excel','Communication'],2],
+ [27,'Business Analyst','mercu','Kuala Lumpur','W.P. Kuala Lumpur','fin',5000,7500,'Full-time',['SQL','Excel','Power BI','Communication'],3],
+ [28,'Front Office Executive','laguna','Langkawi','Kedah','fnb',2300,3000,'Full-time',['Customer service','English','Communication'],5]
+];
+const JOBS=J.map(r=>({id:r[0],title:r[1],co:r[2],city:r[3],state:r[4],ind:r[5],min:r[6],max:r[7],type:r[8],skills:r[9],days:r[10]}));
+const STATES=[...new Set(JOBS.map(j=>j.state))].sort();
+const SKILLS=[...new Set(JOBS.flatMap(j=>j.skills))];
+const TRENDING=[['Software Developer',32],['Data Analyst',28],['Production Operator',19],['Customer Service Executive',17],['Registered Nurse',15],['Accountant',12],['Logistics Coordinator',11],['Digital Marketing Executive',10],['Electrician (Chargeman)',9],['Sales Executive',8]];
+
+const FAIRS=[
+ {id:'kl',name:'Career Carnival Kuala Lumpur',d:'2026-11-28',d2:'2026-11-29',venue:'MITEC, Kuala Lumpur',state:'W.P. Kuala Lumpur',emp:120,vac:8500,mode:'Physical'},
+ {id:'pg',name:'Penang Industry Career Fair',d:'2026-12-05',venue:'SPICE Arena, Bayan Lepas',state:'Pulau Pinang',emp:80,vac:5200,mode:'Physical'},
+ {id:'jb',name:'Johor Career & Skills Fair',d:'2026-12-12',venue:'Persada Johor, Johor Bahru',state:'Johor',emp:95,vac:6100,mode:'Physical'},
+ {id:'vt',name:'Virtual Career Fair: Digital & Tech',d:'2026-12-17',venue:'Online',state:'Nationwide',emp:45,vac:2300,mode:'Virtual'},
+ {id:'kk',name:'Sabah Career Fair',d:'2027-01-09',venue:'Sabah International Convention Centre, Kota Kinabalu',state:'Sabah',emp:60,vac:3400,mode:'Physical'},
+ {id:'kch',name:'Sarawak Career Fair',d:'2027-01-16',venue:'Borneo Convention Centre, Kuching',state:'Sarawak',emp:70,vac:4000,mode:'Physical'}
+];
+const TRAININGS=[
+ {id:1,t:'Data Analytics with Power BI',p:'Akademi Digital Nusantara',cat:'Digital',mode:'Online',dur:'5 days',fee:'Fully funded',seats:18},
+ {id:2,t:'Certified Forklift Operator',p:'Institut Kemahiran Gerak',cat:'Technical',mode:'Physical · Klang',dur:'3 days',fee:'Fully funded',seats:6},
+ {id:3,t:'Basic Electrical Wiring (PW2)',p:'Kolej Teknik Kuasa',cat:'Technical',mode:'Physical · Ipoh',dur:'4 weeks',fee:'RM 450 (claimable)',seats:12},
+ {id:4,t:'Digital Marketing Bootcamp',p:'Studio Akademi',cat:'Digital',mode:'Hybrid',dur:'6 weeks',fee:'Fully funded',seats:24},
+ {id:5,t:'Barista & Café Operations',p:'Akademi Hospitaliti Melaka',cat:'Hospitality',mode:'Physical · Melaka',dur:'10 days',fee:'Fully funded',seats:9},
+ {id:6,t:'Cloud Practitioner Foundations',p:'Awan Academy',cat:'Digital',mode:'Online',dur:'4 weeks',fee:'RM 300 (claimable)',seats:30},
+ {id:7,t:'Certificate in Caregiving',p:'Pusat Latihan Jagaan Johor',cat:'Healthcare',mode:'Physical · Johor Bahru',dur:'8 weeks',fee:'Fully funded',seats:15},
+ {id:8,t:'Workplace English for Customer Service',p:'LinguaWork Training',cat:'Soft skills',mode:'Online',dur:'2 weeks',fee:'Fully funded',seats:40}
+];
+const PARTNERS=[
+ {id:'prowira',n:'PROWIRA',c:'#0E2A5C',d:'Placement support for veterans and their families moving into civilian careers.',roles:['Security Supervisor','Logistics Coordinator','Facility Executive']},
+ {id:'grab',n:'Grab',c:'#00A651',d:'Driver-partner, delivery-partner and corporate roles across Malaysia.',roles:['Driver-partner','Delivery-partner','Operations Associate']},
+ {id:'glc',n:'GLC & GLIC',c:'#1F5FC4',d:'Graduate and experienced-hire programmes with government-linked companies.',roles:['Graduate Trainee','Finance Executive','Engineer']},
+ {id:'carsome',n:'Carsome',c:'#E4002B',d:'Car inspection, sales and technology roles in the used-car marketplace.',roles:['Car Inspector','Sales Consultant','Software Engineer']}
+];
+const MYCEC_BR=['MYCEC Kuala Lumpur','MYCEC Shah Alam','MYCEC Pulau Pinang','MYCEC Johor Bahru','MYCEC Kuching','MYCEC Kota Kinabalu'];
+const MYCEC_SV=['Career coaching','Resume clinic','Interview practice','Psychometric assessment'];
+const SAMPLE_RESUME=`NUR AISYAH BINTI RAHMAN
+Petaling Jaya, Selangor · aisyah.sample@email.com
+
+SUMMARY
+Data analyst with 3 years of experience turning sales and operations data into reports for management.
+
+EXPERIENCE
+Junior Data Analyst, Retail Group (2023 – present)
+- Built weekly dashboards in Power BI and Excel for 40 stores
+- Wrote SQL queries to clean and join sales data
+- Automated reporting tasks with Python
+
+SKILLS
+SQL, Python, Excel, Power BI, Communication, Microsoft Office, English
+
+EDUCATION
+Bachelor of Statistics, Universiti Malaya (2022)`;
+
+/* ================= state ================= */
+const S={
+  user:null, apps:[], fairRegs:[], bookings:[],
+  q:'', loc:'', indF:'', typeF:'', minSal:0, sort:'rel',
+  ai:{step:'upload',file:null,text:'',skills:[],err:null},
+  fairId:null, applyId:null, applyDone:false, applyFrom:'search',
+  cj:'student', mycec:{mode:null,br:MYCEC_BR[0],sv:MYCEC_SV[0],date:null,time:null,meta:null},
+  trCat:'', trMode:'', moreOpen:false
+};
+
+/* ================= helpers ================= */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=n=>n.toLocaleString('en-MY');
+const rm=n=>'RM '+num(n);
+const MON=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+const dt=s=>{const d=new Date(s+'T00:00:00');return d};
+const fdate=s=>{const d=dt(s);return d.getDate()+' '+MON[d.getMonth()].charAt(0)+MON[d.getMonth()].slice(1).toLowerCase()+' '+d.getFullYear()};
+const job=id=>JOBS.find(j=>j.id===+id);
+const initials=s=>s.split(/\s+/).filter(w=>/^[A-Za-z]/.test(w)).slice(0,2).map(w=>w[0].toUpperCase()).join('');
+const ref=p=>p+'-'+Math.random().toString(36).slice(2,8).toUpperCase();
+function toast(msg,icon='check'){const t=document.createElement('div');t.className='toast';t.innerHTML=ic(icon,18)+'<span>'+msg+'</span>';$('#toasts').appendChild(t);setTimeout(()=>t.remove(),3600)}
+
+/* ================= modal ================= */
+let modalClose=null;
+function openModal(html,{wide=false,onClose=null}={}){
+  const m=$('#modal');m.className='modal'+(wide?' wide':'');m.innerHTML=html;$('#modalBg').hidden=false;modalClose=onClose;
+  document.body.style.overflow='hidden';
+  setTimeout(()=>{const f=m.querySelector('input,select,textarea,button:not(.mx)');f&&f.focus()},30);
+}
+function closeModal(){$('#modalBg').hidden=true;$('#modal').innerHTML='';document.body.style.overflow='';const c=modalClose;modalClose=null;c&&c()}
+const mhead=(t,sub='')=>`<div class="mh"><div>${sub?`<p class="eyebrow">${sub}</p>`:''}<h3 style="margin-top:${sub?'4px':'0'}">${t}</h3></div><button class="mx" type="button" data-act="close" aria-label="Close">${ic('x',18)}</button></div>`;
+
+/* Simulated redirect to an external destination */
+function redirect(name,desc=''){
+  openModal(`${mhead('Redirecting you…','External page')}
+  <div class="mb">
+    <div class="ext"><span class="ib">${ic('ext')}</span><div><strong>${esc(name)}</strong><p class="small muted">${esc(desc||'Opens outside the MYFutureJobs homepage.')}</p></div></div>
+    <div class="progress"><i id="rbar"></i></div>
+    <p class="small muted" id="rmsg">Preparing a secure connection…</p>
+    <div class="mfoot" id="rfoot" hidden><button class="btn btn-ghost" data-act="close">Back to MYFutureJobs</button></div>
+  </div>`);
+  requestAnimationFrame(()=>{const b=$('#rbar');b&&(b.style.width='100%')});
+  setTimeout(()=>{const m=$('#rmsg');if(!m)return;m.innerHTML=`<span class="tag ok">${ic('check',14)} Redirect simulated</span><br><span style="display:block;margin-top:8px">In the live portal this button opens <b>${esc(name)}</b>. This prototype stays on the homepage so you can keep testing the flow.</span>`;$('#rfoot').hidden=false},1300);
+}
+
+/* ================= auth (login / register) ================= */
+let afterAuth=null;
+function requireLogin(cb,ctx='Sign in to continue'){
+  if(S.user){cb();return}
+  afterAuth=cb;authModal('login',ctx);
+}
+function authModal(tab,ctx){
+  openModal(`${mhead(tab==='login'?'Sign in to MYFutureJobs':'Create your MYFutureJobs account','Jobseeker Portal')}
+  <div class="mb">
+    <p class="small muted">${esc(ctx)}</p>
+    <div class="auth-tabs" role="tablist">
+      <button type="button" role="tab" aria-selected="${tab==='login'}" data-act="authtab" data-tab="login" data-ctx="${esc(ctx)}">I have an account</button>
+      <button type="button" role="tab" aria-selected="${tab==='register'}" data-act="authtab" data-tab="register" data-ctx="${esc(ctx)}">I'm new here</button>
+    </div>
+    ${tab==='login'?`
+    <form data-form="login" class="grid" novalidate>
+      <div class="field"><label for="lEmail">Email or IC number</label><input class="inp" id="lEmail" name="email" autocomplete="username" placeholder="you@email.com"><div class="err" hidden></div></div>
+      <div class="field"><label for="lPass">Password</label><input class="inp" id="lPass" name="pass" type="password" autocomplete="current-password" placeholder="At least 6 characters"><div class="err" hidden></div></div>
+      <button class="btn btn-blue btn-block">Sign in</button>
+      <p class="small muted center">Demo: any email and a password of 6+ characters works.</p>
+    </form>`:`
+    <form data-form="register" class="grid" novalidate>
+      <div class="field"><label for="rName">Full name (as in MyKad)</label><input class="inp" id="rName" name="name" autocomplete="name" placeholder="e.g. Nur Aisyah binti Rahman"><div class="err" hidden></div></div>
+      <div class="field"><label for="rIc">MyKad number</label><input class="inp" id="rIc" name="ic" inputmode="numeric" placeholder="e.g. 990101-14-5678"><div class="err" hidden></div></div>
+      <div class="field"><label for="rEmail">Email</label><input class="inp" id="rEmail" name="email" autocomplete="email" placeholder="you@email.com"><div class="err" hidden></div></div>
+      <div class="field"><label for="rPass">Password</label><input class="inp" id="rPass" name="pass" type="password" autocomplete="new-password" placeholder="At least 6 characters"><div class="err" hidden></div></div>
+      <button class="btn btn-orange btn-block">Register</button>
+    </form>`}
+  </div>`);
+}
+function fieldErr(f,name,msg){const i=f.elements[name];const e=i.parentElement.querySelector('.err');i.classList.toggle('bad',!!msg);e.hidden=!msg;e.textContent=msg||'';return !msg}
+const emailOk=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)||/^\d{6}-?\d{2}-?\d{4}$/.test(v);
+function finishAuth(){
+  renderHeader(curRoute());
+  const cb=afterAuth;afterAuth=null;
+  if(cb){closeModalSilently();cb()}else{closeModal();render()}
+}
+function closeModalSilently(){$('#modalBg').hidden=true;$('#modal').innerHTML='';document.body.style.overflow='';modalClose=null}
+
+/* ================= navigation ================= */
+const JS_NAV=[['search','Find Jobs'],['ai','AI Job Match'],['career-journey','Career Journey'],['career-fair','Career Fair'],['mycec','MYCEC'],['training','Training']];
+const JS_MORE=[['trending','Trending Jobs'],['insight','MYFutureJobs Insight'],['collaboration','Collaboration'],['initiatives','General / Initiatives']];
+const EM_NAV=[['support','Recruitment Support'],['stats','Statistics'],['stories','Success Stories'],['incentives','Incentive Programmes']];
+const curRoute=()=>{const r=location.hash.slice(1);return ROUTES[r]?r:'home'};
+function renderHeader(r){
+  const emp=r==='employer';
+  $('#audJS').setAttribute('aria-pressed',!emp);$('#audEM').setAttribute('aria-pressed',emp);
+  $('#logoSub').textContent=emp?'Employer':'Jobseeker';
+  const nav=$('#nav');
+  if(emp){
+    nav.innerHTML=EM_NAV.map(([k,l])=>`<a href="#employer" data-scroll="${k}">${l}</a>`).join('');
+  }else{
+    nav.innerHTML=JS_NAV.map(([k,l])=>`<a href="#${k}" class="${r===k||(k==='career-fair'&&(r==='fair'||r==='fair-done'))||(k==='search'&&r==='apply')?'on':''}">${l}</a>`).join('')+
+    `<div class="more"><button type="button" class="nl" data-act="more" aria-expanded="${S.moreOpen}">More ▾</button><div class="more-menu" ${S.moreOpen?'':'hidden'}>${JS_MORE.map(([k,l])=>`<a href="#${k}" class="${r===k?'on':''}">${l}</a>`).join('')}</div></div>`;
+  }
+  const h=$('#hright');
+  if(emp){
+    h.innerHTML=`<button class="btn btn-ghost btn-sm" data-act="aud" data-to="home">For jobseekers</button><button class="btn btn-orange" data-act="redir" data-name="Employer Portal" data-desc="Sign in to post vacancies, screen candidates and manage interviews.">${ic('door',18)} Sign In Employer</button>`;
+  }else if(S.user){
+    h.innerHTML=`<button class="userchip" type="button" data-act="account"><span class="avatar">${esc(initials(S.user.name)||'U')}</span><span><strong>${esc(S.user.name.split(' ')[0])}</strong><small>${S.apps.length} application${S.apps.length===1?'':'s'}</small></span></button>`;
+  }else{
+    h.innerHTML=`<button class="btn btn-ghost btn-sm" data-act="aud" data-to="employer">For employers</button><button class="btn btn-blue" data-act="signinjs">${ic('user',18)} Sign In</button>`;
+  }
+  $('#hamb').innerHTML=ic($('#nav').classList.contains('open')?'x':'menu',20);
+  $('.fab').innerHTML=ic('route',16)+' Flow guide';
+}
+
+/* ================= shared fragments ================= */
+const pagehead=(crumb,title,lead,extra='')=>`<section class="pagehead"><div class="wrap"><div class="crumbs"><button data-go="home">Home</button><span>/</span>${crumb}</div><h1>${title}</h1>${lead?`<p class="lead">${lead}</p>`:''}${extra}</div></section>`;
+function jobRow(j,{match=null,from='search'}={}){
+  const c=CO[j.co];const applied=S.apps.some(a=>a.id===j.id);
+  return `<article class="job">
+    <div class="clogo" style="background:${c.c}">${initials(c.n)}</div>
+    <div style="min-width:0">
+      <h3><button data-act="jobview" data-id="${j.id}" data-from="${from}">${esc(j.title)}</button></h3>
+      <p class="co">${esc(c.n)}</p>
+      <div class="meta" style="margin-top:8px"><span>${ic('pin',15)}${esc(j.city)}, ${esc(j.state)}</span><span>${ic('brief',15)}${j.type}</span><span>${ic('clock',15)}${j.days===1?'Posted today':'Posted '+j.days+' days ago'}</span></div>
+      <div class="skills">${j.skills.map(s=>`<span class="tag ${match&&match.hit.includes(s)?'ok':'gr'}">${match&&match.hit.includes(s)?ic('check',12):''}${esc(s)}</span>`).join('')}</div>
+    </div>
+    <div class="acts">
+      ${match?`<div class="match">${match.pct}%<small>CV match</small></div>`:`<div class="sal">${rm(j.min)} – ${num(j.max)}</div>`}
+      ${applied?`<span class="tag ok">${ic('check',14)} Applied</span>`:`<button class="btn btn-orange btn-sm" data-act="apply" data-id="${j.id}" data-from="${from}">Apply</button>`}
+      <button class="btn btn-ghost btn-sm" data-act="jobview" data-id="${j.id}" data-from="${from}">Details</button>
+    </div>
+  </article>`;
+}
+
+/* ================= VIEW: Jobseeker homepage ================= */
+function vHome(){
+  const fairs=FAIRS.slice(0,3);
+  const maxInd=Math.max(...Object.values(IND_COUNT));
+  return `
+  <section class="hero"><div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow" style="color:var(--orange)">Jobseeker homepage</p>
+      <h1 style="margin-top:10px">Find work that fits your <span>skills</span>, close to home.</h1>
+      <p class="lead">Search ${num(312768)} live vacancies from verified employers across Malaysia, or upload your resume and let AI pick your ten best matches.</p>
+      <form class="searchbar" data-form="search" role="search">
+        <label class="fld">${ic('search',18)}<span class="sr">Job title, skill or company</span><input id="hq" name="q" placeholder="Job title, skill or company" value="${esc(S.q)}"></label>
+        <label class="fld">${ic('pin',18)}<span class="sr">Location</span><select id="hloc" name="loc"><option value="">All states</option>${STATES.map(s=>`<option ${S.loc===s?'selected':''}>${s}</option>`).join('')}</select></label>
+        <button class="btn btn-orange">Search jobs</button>
+      </form>
+      <div class="pop">Popular:${['Data Analyst','Nurse','Operator','Accountant','Driver'].map(k=>`<button type="button" data-act="qs" data-q="${k}">${k}</button>`).join('')}</div>
+    </div>
+    <aside class="ai-card">
+      <span class="ai-badge">${ic('spark',14)} AI Generative</span>
+      <h3>AI Job Recommendation</h3>
+      <p class="muted small" style="margin-top:6px">Upload your resume. Our AI reads your skills and experience, then lists the 10 vacancies that fit you best.</p>
+      <ol class="ai-steps"><li><span>1</span>Upload your resume (PDF, DOCX or TXT)</li><li><span>2</span>AI reviews your skills and experience</li><li><span>3</span>Sign in and see your Top 10 matches</li></ol>
+      <button class="btn btn-orange btn-block" data-go="ai">${ic('upload',18)} Upload resume</button>
+    </aside>
+  </div></section>
+
+  <section class="quick"><div class="wrap"><div class="quick-grid">
+    ${[['compass','Career Journey','career-journey'],['cal','Career Fair','career-fair'],['users','MYCEC','mycec'],['book','Training','training'],['chart','Insight','insight'],['link','Collaboration','collaboration'],['shield','Initiatives','initiatives']].map(([i,l,r])=>`<button class="qa" data-go="${r}"><span class="ib">${ic(i,22)}</span>${l}</button>`).join('')}
+  </div></div></section>
+
+  <section class="sec"><div class="wrap">
+    <div class="sec-head"><div><p class="eyebrow">This month</p><h2 style="margin-top:6px">Trending jobs and top industries</h2><p>Roles with the fastest growth in new vacancies, and the industries hiring the most people right now.</p></div><button class="btn btn-ghost" data-go="trending">See all trends ${ic('arrow',16)}</button></div>
+    <div class="two">
+      <div class="panel"><div class="phead"><h3>Trending jobs</h3><span class="tag ok">${ic('trend',14)} Growth vs last month</span></div>
+        <ol class="trend-list">${TRENDING.slice(0,6).map(([t,g],i)=>`<li><button data-act="qs" data-q="${esc(t)}"><span class="rank">${String(i+1).padStart(2,'0')}</span><span><span class="t">${esc(t)}</span><span class="s" style="display:block">${num(4200-i*530)} vacancies</span></span><span class="up">▲ ${g}%</span></button></li>`).join('')}</ol>
+      </div>
+      <div class="panel"><div class="phead"><h3>Top 10 industries</h3><span class="small muted">Active vacancies</span></div>
+        <div class="ind-bars">${Object.entries(IND_COUNT).map(([k,v])=>`<button class="ind" data-act="indsearch" data-ind="${k}"><span>${IND[k]}</span><span class="bar"><i style="width:${(v/maxInd*100).toFixed(1)}%"></i></span><span class="n">${num(v)}</span></button>`).join('')}</div>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="sec band"><div class="wrap">
+    <div class="sec-head"><div><p class="eyebrow">Career Journey</p><h2 style="margin-top:6px">Wherever you're starting from, there's a path</h2><p>Pick the stage that describes you. Each path links to the tools that help at that stage.</p></div><button class="btn btn-ghost" data-go="career-journey">Explore Career Journey ${ic('arrow',16)}</button></div>
+    <div class="grid g3">
+      ${[['cap','Student','Plan your first career step with CareerPathway, CLP and CEP.','student'],['brief','Job Seekers','Explore careers at MYCEC or get matched to vacancies.','seeker'],['route','Informal to Formal (TTF)','Turn informal work experience into recognised skills and a formal job.','ttf']].map(([i,t,d,k])=>`<div class="card click" data-act="cjgo" data-tab="${k}"><span class="ib">${ic(i,22)}</span><h3>${t}</h3><p class="muted small">${d}</p><div class="foot"><span class="btn-link">Start here ${ic('arrow',16)}</span></div></div>`).join('')}
+    </div>
+  </div></section>
+
+  <section class="sec"><div class="wrap">
+    <div class="sec-head"><div><p class="eyebrow">Career Fair</p><h2 style="margin-top:6px">Meet employers face to face</h2><p>Register once with your MYFutureJobs account and walk in with a ticket.</p></div><button class="btn btn-ghost" data-go="career-fair">All career fairs ${ic('arrow',16)}</button></div>
+    <div class="grid g3">${fairs.map(fairCard).join('')}</div>
+  </div></section>
+
+  <section class="sec band-navy"><div class="wrap two" style="align-items:stretch">
+    <div class="card" style="background:var(--navy-2);border-color:rgba(255,255,255,.12);color:#DCE6F7">
+      <span class="ib" style="background:var(--orange);color:#1E1300">${ic('users',22)}</span>
+      <h3 style="color:#fff;font-size:21px">MYCEC career centres</h3>
+      <p>Book a session with a career coach at a centre near you, or visit MYCEC in the metaverse from home.</p>
+      <div class="foot"><button class="btn btn-orange" data-go="mycec">Visit MYCEC</button></div>
+    </div>
+    <div class="card" style="background:var(--navy-2);border-color:rgba(255,255,255,.12);color:#DCE6F7">
+      <span class="ib" style="background:var(--orange);color:#1E1300">${ic('book',22)}</span>
+      <h3 style="color:#fff;font-size:21px">Training to upskill</h3>
+      <p>${TRAININGS.length} programmes open for registration, most of them fully funded. Apply directly with the training provider.</p>
+      <div class="foot"><button class="btn btn-orange" data-go="training">Browse training</button></div>
+    </div>
+  </div></section>
+
+  <section class="sec"><div class="wrap">
+    <div class="sec-head"><div><p class="eyebrow">Collaboration</p><h2 style="margin-top:6px">Hiring partners</h2><p>Organisations recruiting through MYFutureJobs collaboration programmes.</p></div><button class="btn btn-ghost" data-go="collaboration">All partners ${ic('arrow',16)}</button></div>
+    <div class="partners">${PARTNERS.map(partnerTile).join('')}</div>
+  </div></section>
+
+  <section class="sec band"><div class="wrap">
+    <div class="sec-head"><div><p class="eyebrow">General / Initiatives</p><h2 style="margin-top:6px">Programmes that protect and support you</h2></div><button class="btn btn-ghost" data-go="initiatives">All initiatives ${ic('arrow',16)}</button></div>
+    <div class="grid g3">${INITS.map(initCard).join('')}</div>
+  </div></section>`;
+}
+function fairCard(f){
+  const d=dt(f.d);const reg=S.fairRegs.find(r=>r.id===f.id);
+  return `<div class="card"><div class="fair-row"><div class="date"><b>${MON[d.getMonth()]}</b><strong>${d.getDate()}</strong></div><div style="min-width:0"><h3>${esc(f.name)}</h3><div class="meta" style="margin-top:6px"><span>${ic(f.mode==='Virtual'?'globe':'pin',15)}${esc(f.venue)}</span></div></div></div>
+  <div class="meta"><span>${ic('bld',15)}${f.emp} employers</span><span>${ic('brief',15)}${num(f.vac)} vacancies</span></div>
+  <div class="foot">${reg?`<span class="tag ok">${ic('check',14)} Registered</span>`:`<span class="tag ${f.mode==='Virtual'?'':'or'}">${f.mode}</span>`}<button class="btn btn-link" style="margin-left:auto" data-act="fairview" data-id="${f.id}">View info ${ic('arrow',16)}</button></div></div>`;
+}
+const partnerTile=p=>`<button class="partner" data-act="partner" data-id="${p.id}"><span class="pl" style="color:${p.c}">${p.n}</span><span class="small muted">${p.d}</span><span class="btn-link small">View opportunities ${ic('arrow',14)}</span></button>`;
+const INITS=[
+ {i:'brief',t:'Re-Employment Placement Programme (REPP)',d:'Job placement help for insured workers who lost their jobs, with job-search allowance support.',dest:'REPP page'},
+ {i:'shield',t:'Lindung Kerjaya',d:'Protection for workers who lose their job, including income replacement and re-employment services.',dest:'Lindung Kerjaya page'},
+ {i:'gift',t:'Budget 2026',d:'Employment and social security measures announced in Budget 2026 and how to benefit from them.',dest:'PERKESO website'}
+];
+const initCard=x=>`<div class="card"><span class="ib">${ic(x.i,22)}</span><h3>${x.t}</h3><p class="muted small">${x.d}</p><div class="foot"><button class="btn btn-ghost btn-sm" data-act="redir" data-name="${esc(x.dest)}" data-desc="${esc(x.t)}">Learn more ${ic('ext',15)}</button></div></div>`;
+
+/* ================= VIEW: Search results (Vacancy Result · Candidate Portal) ================= */
+function filterJobs(){
+  const q=S.q.trim().toLowerCase();
+  let r=JOBS.filter(j=>{
+    if(S.loc&&j.state!==S.loc)return false;
+    if(S.indF&&j.ind!==S.indF)return false;
+    if(S.typeF&&j.type!==S.typeF)return false;
+    if(S.minSal&&j.max<S.minSal)return false;
+    if(!q)return true;
+    const hay=(j.title+' '+CO[j.co].n+' '+j.skills.join(' ')+' '+IND[j.ind]+' '+j.city).toLowerCase();
+    return q.split(/\s+/).every(w=>hay.includes(w));
+  });
+  if(S.sort==='new')r.sort((a,b)=>a.days-b.days);
+  if(S.sort==='sal')r.sort((a,b)=>b.max-a.max);
+  return r;
+}
+function vSearch(){
+  const r=filterJobs();
+  return `${pagehead('<span>Vacancy results</span>','Vacancy results','Live vacancies from the Candidate Portal. Pick a job to see details, then apply with your MYFutureJobs account.',`
+    <form class="searchbar" data-form="search" role="search" style="max-width:860px">
+      <label class="fld">${ic('search',18)}<span class="sr">Job title, skill or company</span><input id="sq" name="q" placeholder="Job title, skill or company" value="${esc(S.q)}"></label>
+      <label class="fld">${ic('pin',18)}<span class="sr">Location</span><select id="sloc" name="loc"><option value="">All states</option>${STATES.map(s=>`<option ${S.loc===s?'selected':''}>${s}</option>`).join('')}</select></label>
+      <button class="btn btn-orange">Search</button>
+    </form>`)}
+  <section class="sec-tight"><div class="wrap res-layout">
+    <aside class="panel filters">
+      <div class="f"><label for="fInd">Industry</label><select id="fInd" data-filter="indF"><option value="">All industries</option>${Object.entries(IND).map(([k,v])=>`<option value="${k}" ${S.indF===k?'selected':''}>${v}</option>`).join('')}</select></div>
+      <div class="f"><label for="fType">Job type</label><select id="fType" data-filter="typeF"><option value="">Any</option>${['Full-time','Part-time','Contract'].map(t=>`<option ${S.typeF===t?'selected':''}>${t}</option>`).join('')}</select></div>
+      <div class="f"><label for="fSal">Salary up to at least</label><select id="fSal" data-filter="minSal"><option value="0">Any salary</option>${[2500,3500,5000,7000].map(v=>`<option value="${v}" ${S.minSal==v?'selected':''}>${rm(v)}</option>`).join('')}</select></div>
+      <button class="btn btn-ghost btn-sm" data-act="clearf">Clear filters</button>
+      <div class="alert info small">${ic('spark',18)}<span>Not sure what to search? <button class="btn-link" data-go="ai">Let AI match your resume</button></span></div>
+    </aside>
+    <div class="panel" style="min-width:0">
+      <div class="toolbar"><p><strong>${r.length}</strong> <span class="muted">job${r.length===1?'':'s'} found${S.q?` for “${esc(S.q)}”`:''}${S.loc?` in ${esc(S.loc)}`:''}${S.indF?` · ${IND[S.indF]}`:''}</span></p>
+        <label class="small muted">Sort by <select id="fSort" data-filter="sort"><option value="rel" ${S.sort==='rel'?'selected':''}>Relevance</option><option value="new" ${S.sort==='new'?'selected':''}>Newest</option><option value="sal" ${S.sort==='sal'?'selected':''}>Highest salary</option></select></label></div>
+      ${r.length?r.map(j=>jobRow(j)).join(''):`<div class="empty">${ic('search',36)}<h3>No vacancies match your search</h3><p>Try a broader keyword, another state, or clear the filters.</p><button class="btn btn-ghost" data-act="clearall">Show all vacancies</button></div>`}
+    </div>
+  </div></section>`;
+}
+
+/* ================= VIEW: Trending + Top 10 industries ================= */
+function vTrending(){
+  const maxInd=Math.max(...Object.values(IND_COUNT));
+  return `${pagehead('<span>Trending jobs</span>','Trending jobs','The ten roles growing fastest on MYFutureJobs this month, and the ten industries with the most active vacancies. Select any row to see its vacancies.')}
+  <section class="sec"><div class="wrap two">
+    <div class="panel"><div class="phead"><h3>Top 10 trending jobs</h3><span class="tag ok">${ic('trend',14)} Nov 2026</span></div>
+      <ol class="trend-list">${TRENDING.map(([t,g],i)=>`<li><button data-act="qs" data-q="${esc(t)}"><span class="rank">${String(i+1).padStart(2,'0')}</span><span><span class="t">${esc(t)}</span><span class="s" style="display:block">${num(4200-i*390)} vacancies</span></span><span class="up">▲ ${g}%</span></button></li>`).join('')}</ol></div>
+    <div class="panel"><div class="phead"><h3>Top 10 industries</h3><span class="small muted">Active vacancies</span></div>
+      <div class="ind-bars">${Object.entries(IND_COUNT).map(([k,v])=>`<button class="ind" data-act="indsearch" data-ind="${k}"><span>${IND[k]}</span><span class="bar"><i style="width:${(v/maxInd*100).toFixed(1)}%"></i></span><span class="n">${num(v)}</span></button>`).join('')}</div></div>
+  </div></section>`;
+}
+
+/* ================= VIEW: AI Job Recommendation ================= */
+function aiMatches(){
+  const sk=S.ai.skills.map(s=>s.toLowerCase());
+  return JOBS.map(j=>{
+    const hit=j.skills.filter(s=>sk.includes(s.toLowerCase()));
+    const titleHit=S.ai.text&&S.ai.text.toLowerCase().includes(j.title.toLowerCase().split(' (')[0].toLowerCase())?1:0;
+    const score=hit.length/j.skills.length*0.55+Math.min(hit.length,4)/4*0.25+titleHit*0.2;
+    return {j,hit,score,pct:Math.min(98,Math.round(42+score*62))};
+  }).sort((a,b)=>b.score-a.score||a.j.days-b.j.days).slice(0,10);
+}
+function vAI(){
+  const a=S.ai;const steps=['Upload resume','AI review','Sign in','Top 10 matches','Apply'];
+  const idx={upload:0,scan:1,reviewed:2,results:3}[a.step];
+  const stepper=`<ol class="stepper">${steps.map((s,i)=>`<li class="${i<idx?'done':i===idx?'now':''}"><i></i>${s}</li>`).join('')}</ol>`;
+  let body='';
+  if(a.step==='upload'){
+    body=`<div class="two" style="align-items:start">
+      <div class="grid">
+        ${a.err?`<div class="alert bad">${ic('alert',20)}<div><strong>AI couldn't review this resume.</strong><br>${esc(a.err)} Upload another file to try again.</div></div>`:''}
+        <label class="drop" id="drop" for="cv">
+          <span class="ib">${ic('upload',28)}</span>
+          <h3>Drop your resume here, or browse</h3>
+          <span class="small muted">PDF, DOC, DOCX or TXT · up to 5 MB</span>
+          <span class="btn btn-blue">Choose file</span>
+          <input type="file" id="cv" accept=".pdf,.doc,.docx,.txt" class="sr">
+        </label>
+        <p class="small muted center">No resume handy? <button class="btn-link" data-act="aisample">Use a sample resume</button></p>
+      </div>
+      <div class="panel" style="padding:22px">
+        <h3>What the AI looks at</h3>
+        <ul class="ticks" style="margin-top:14px">
+          <li>${ic('check',18)}Skills, tools and certifications you list</li>
+          <li>${ic('check',18)}Job titles and years of experience</li>
+          <li>${ic('check',18)}Education and languages</li>
+          <li>${ic('check',18)}Where you live, to favour jobs nearby</li>
+        </ul>
+        <div class="alert info small" style="margin-top:18px">${ic('shield',18)}<span>Your resume is only used to match vacancies. You can remove it from your profile at any time.</span></div>
+      </div>
+    </div>`;
+  }else if(a.step==='scan'){
+    body=`<div class="panel" style="padding:26px;max-width:620px;margin:0 auto">
+      <div class="ext" style="margin-bottom:18px"><span class="ib">${ic('file')}</span><div style="min-width:0"><strong style="word-break:break-all">${esc(a.file.name)}</strong><p class="small muted">${a.file.size}</p></div></div>
+      <div class="progress" style="margin-bottom:18px"><i id="aibar"></i></div>
+      <ul class="scan-list" id="scan">${['Reading the document','Finding skills and experience','Checking resume quality','Matching against live vacancies'].map(s=>`<li><span class="dot"></span>${s}</li>`).join('')}</ul>
+    </div>`;
+  }else if(a.step==='reviewed'){
+    body=`<div class="panel" style="padding:26px;max-width:640px;margin:0 auto;display:grid;gap:16px">
+      <div class="alert ok">${ic('check',20)}<div><strong>Resume reviewed.</strong> The AI found ${a.skills.length} skills in <b style="word-break:break-all">${esc(a.file.name)}</b>.</div></div>
+      <div class="skills" style="margin:0">${a.skills.map(s=>`<span class="tag">${esc(s)}</span>`).join('')}</div>
+      <p class="muted">Sign in to the Jobseeker Portal to see your Top 10 matching vacancies and apply. New to MYFutureJobs? You can register in the same step.</p>
+      <div class="mfoot" style="justify-content:flex-start"><button class="btn btn-orange" data-act="aishow">${ic('user',18)} ${S.user?'Show my Top 10':'Sign in to see my Top 10'}</button><button class="btn btn-ghost" data-act="aireset">Upload a different resume</button></div>
+    </div>`;
+  }else{
+    const m=aiMatches();
+    body=`<div class="res-layout">
+      <aside class="panel filters">
+        <div><h4>Skills from your resume</h4><p class="small muted" style="margin-top:4px">Remove or add skills. Your matches update straight away.</p></div>
+        <div class="skills" style="margin:0" id="skillChips">${a.skills.map((s,i)=>`<span class="chip-x">${esc(s)}<button type="button" data-act="skrm" data-i="${i}" aria-label="Remove ${esc(s)}">${ic('x',12)}</button></span>`).join('')}</div>
+        <form data-form="skadd" class="f" style="display:flex;gap:6px"><label class="sr" for="skIn">Add a skill</label><input id="skIn" name="s" list="skList" placeholder="Add a skill"><datalist id="skList">${SKILLS.map(s=>`<option value="${esc(s)}">`).join('')}</datalist><button class="btn btn-blue btn-sm">Add</button></form>
+        <div class="ext"><span class="ib">${ic('file',18)}</span><div style="min-width:0"><strong class="small" style="word-break:break-all">${esc(a.file.name)}</strong><p class="small muted"><button class="btn-link small" data-act="aireset">Replace resume</button></p></div></div>
+      </aside>
+      <div class="panel" style="min-width:0">
+        <div class="toolbar"><div><h3>Your Top 10 vacancies</h3><p class="small muted">Ranked by how well each job's required skills match your resume.</p></div><span class="tag or">${ic('spark',14)} AI Generative</span></div>
+        ${m.map(x=>jobRow(x.j,{match:x,from:'ai'})).join('')}
+      </div>
+    </div>`;
+  }
+  return `${pagehead('<span>AI Job Recommendation</span>','AI Job Recommendation','Upload your resume and let AI find the ten vacancies that best fit your skills and experience.')}
+  <section class="sec-tight"><div class="wrap">${stepper}${body}</div></section>`;
+}
+function aiAnalyse(file,text){
+  const ok=/\.(pdf|docx?|txt)$/i.test(file.name);
+  S.ai.file={name:file.name,size:file.size<1024?file.size+' bytes':(file.size/1024).toFixed(0)+' KB'};S.ai.err=null;
+  if(!ok){S.ai.err=`“${file.name}” is not a supported file type. Use PDF, DOC, DOCX or TXT.`;S.ai.step='upload';render();return}
+  if(file.size>5*1024*1024){S.ai.err='The file is larger than 5 MB.';S.ai.step='upload';render();return}
+  if(file.size<200){S.ai.err='The file is almost empty, so there is nothing to read.';S.ai.step='upload';render();return}
+  const low=(text||'').toLowerCase();
+  let found=SKILLS.filter(s=>low.includes(s.toLowerCase()));
+  const isTxt=/\.txt$/i.test(file.name);
+  if(!found.length&&isTxt){S.ai.text=text;S.ai.step='scan';render();runScan(false,'No skills or work experience were found in the text. Add a Skills section and try again.');return}
+  if(!found.length) found=['Communication','Microsoft Office','Excel','Customer service']; // binary formats: mock extraction
+  S.ai.text=text||'';S.ai.skills=found;S.ai.step='scan';render();runScan(true);
+}
+function runScan(success,errMsg){
+  const items=$$('#scan li');let i=0;
+  const tick=()=>{
+    if(!$('#scan'))return;
+    if(i>0){items[i-1].classList.remove('run');items[i-1].classList.add('done');items[i-1].querySelector('.dot').innerHTML=ic('check',12)}
+    const bar=$('#aibar');bar&&(bar.style.width=(i/items.length*100)+'%');
+    if(!success&&i===2){S.ai.err=errMsg;S.ai.step='upload';render();return}
+    if(i===items.length){setTimeout(()=>{S.ai.step='reviewed';render()},350);return}
+    items[i].classList.add('run');i++;setTimeout(tick,650);
+  };tick();
+}
+
+/* ================= VIEW: Job application ================= */
+function vApply(){
+  const j=job(S.applyId);const c=CO[j.co];
+  if(S.applyDone){
+    const a=S.apps.find(x=>x.id===j.id);
+    return `${pagehead('<span>Job application</span>','Application submitted','')}
+    <section class="sec"><div class="wrap"><div class="panel center" style="padding:36px 24px;max-width:640px;margin:0 auto;display:grid;gap:14px">
+      <div class="big-ok">${ic('check',32)}</div>
+      <h2>You've applied for ${esc(j.title)}</h2>
+      <p class="muted">${esc(c.n)} will review your application. We'll notify you by email and in the Jobseeker Portal when your status changes.</p>
+      <dl class="kv" style="text-align:left;max-width:360px;margin:6px auto"><dt>Reference</dt><dd>${a.ref}</dd><dt>Status</dt><dd><span class="tag">Submitted</span></dd><dt>Resume</dt><dd style="word-break:break-all">${esc(a.cv)}</dd></dl>
+      <div class="mfoot" style="justify-content:center"><button class="btn btn-orange" data-act="applyback">${S.applyFrom==='ai'?'Back to my Top 10':'Back to vacancy results'}</button><button class="btn btn-ghost" data-go="home">Go to homepage</button></div>
+    </div></div></section>`;
+  }
+  const cv=S.ai.file?S.ai.file.name:'Resume_'+(S.user.name.split(' ')[0]||'Profile')+'.pdf';
+  return `${pagehead(`<button data-act="applyback">${S.applyFrom==='ai'?'Top 10 matches':'Vacancy results'}</button><span>/</span><span>Apply</span>`,'Job application','')}
+  <section class="sec-tight"><div class="wrap two" style="align-items:start">
+    <div class="panel" style="padding:22px;display:grid;gap:14px">
+      <div style="display:flex;gap:14px;align-items:center"><div class="clogo" style="background:${c.c};width:52px;height:52px;border-radius:10px;display:grid;place-items:center;color:#fff;font:700 16px var(--f-display)">${initials(c.n)}</div><div><h3>${esc(j.title)}</h3><p class="muted small">${esc(c.n)}</p></div></div>
+      <dl class="kv"><dt>Location</dt><dd>${esc(j.city)}, ${esc(j.state)}</dd><dt>Salary</dt><dd>${rm(j.min)} – ${num(j.max)} / month</dd><dt>Type</dt><dd>${j.type}</dd><dt>Industry</dt><dd>${IND[j.ind]}</dd></dl>
+      <div><h4>Skills required</h4><div class="skills">${j.skills.map(s=>`<span class="tag gr">${esc(s)}</span>`).join('')}</div></div>
+    </div>
+    <form class="panel grid" style="padding:22px" data-form="apply" novalidate>
+      <h3>Your details</h3>
+      <div class="field"><label for="aName">Full name</label><input class="inp" id="aName" name="name" value="${esc(S.user.name)}"><div class="err" hidden></div></div>
+      <div class="field"><label for="aPhone">Mobile number</label><input class="inp" id="aPhone" name="phone" inputmode="tel" placeholder="e.g. 012-345 6789" value="${esc(S.user.phone||'')}"><div class="err" hidden></div></div>
+      <div class="field"><label for="aCv">Resume</label><select class="inp" id="aCv" name="cv"><option>${esc(cv)}</option><option>Upload later from the Jobseeker Portal</option></select></div>
+      <div class="grid g2" style="gap:14px">
+        <div class="field"><label for="aSal">Expected salary (RM)</label><input class="inp" id="aSal" name="sal" inputmode="numeric" value="${j.min+500}"><div class="err" hidden></div></div>
+        <div class="field"><label for="aNotice">Available to start</label><select class="inp" id="aNotice" name="notice"><option>Immediately</option><option>In 2 weeks</option><option>In 1 month</option><option>In 2 months</option></select></div>
+      </div>
+      <div class="field"><label for="aNote">Note to employer (optional)</label><textarea class="inp" id="aNote" name="note" placeholder="Tell the employer why you're a good fit."></textarea></div>
+      <label class="small" style="display:flex;gap:8px;align-items:flex-start"><input type="checkbox" id="aOk" name="ok" style="margin-top:4px"> I agree to share my profile and resume with ${esc(c.n)}.</label>
+      <div class="err small" id="okErr" hidden style="color:var(--bad)">Tick the box to share your profile with the employer.</div>
+      <div class="mfoot"><button type="button" class="btn btn-ghost" data-act="applyback">Not now</button><button class="btn btn-orange">Submit application</button></div>
+    </form>
+  </div></section>`;
+}
+
+/* ================= VIEW: Career Journey ================= */
+const CJ={
+  student:{t:'Student',i:'cap',d:'Tools to choose a course, find industry exposure and land your first job after graduating.',items:[
+    ['CareerPathway','Map the jobs your course leads to, with typical salaries and skills needed at each step.','Candidate Portal'],
+    ['CLP','Find structured learning placements with employers while you study.','Candidate Portal'],
+    ['CEP','Join employer engagement sessions and talks for students and fresh graduates.','Candidate Portal']]},
+  seeker:{t:'Job Seekers',i:'brief',d:'Whether you know what you want or not, start by exploring or let us match you.',items:[
+    ['Career Exploration','Talk to a career coach and take an assessment at a MYCEC centre.','MYCEC page'],
+    ['Job Matching','Get matched to vacancies based on your profile, skills and location.','Candidate Portal']]},
+  ttf:{t:'Informal to Formal (TTF)',i:'route',d:'For gig workers, self-employed people and anyone whose experience was never formally recorded.',items:[
+    ['Skills & Recognition','Get your existing skills assessed and recognised with a certificate.','MYFutureJobs Galaxy site'],
+    ['Formal Career Pathway','Move into a formal job with EPF and SOCSO protection.','Candidate Portal']]}
+};
+function vCJ(){
+  const c=CJ[S.cj];
+  return `${pagehead('<span>Career Journey</span>','Career Journey','Choose the stage that describes you best. Each option takes you to the right tool for that step.')}
+  <section class="sec-tight"><div class="wrap">
+    <div class="tabs" role="tablist">${Object.entries(CJ).map(([k,v])=>`<button role="tab" aria-selected="${S.cj===k}" data-act="cjtab" data-tab="${k}">${v.t}</button>`).join('')}</div>
+    <div class="panel" style="padding:24px;display:grid;gap:20px">
+      <div style="display:flex;gap:14px;align-items:center"><span class="card" style="padding:0;border:0"><span class="ib">${ic(c.i,22)}</span></span><div><h2 style="font-size:24px">${c.t}</h2><p class="muted">${c.d}</p></div></div>
+      <div class="path" style="--n:${c.items.length}">${c.items.map(([t,d,dest])=>`<div class="card" style="background:var(--ground)"><h3>${t}</h3><p class="small muted">${d}</p><div class="foot"><button class="btn btn-blue btn-sm" data-act="${dest==='MYCEC page'?'go-mycec':'redir'}" data-name="${dest}" data-desc="${t}">${dest==='MYCEC page'?'Go to MYCEC':'Open '+dest} ${ic(dest==='MYCEC page'?'arrow':'ext',15)}</button></div></div>`).join('')}</div>
+    </div>
+  </div></section>`;
+}
+
+/* ================= VIEW: Career Fair ================= */
+function vFairs(){
+  return `${pagehead('<span>Career Fair</span>','Career Fair','Walk-in interviews, CV clinics and talks with hundreds of employers. Pick an event, read the details and register with your MYFutureJobs account.')}
+  <section class="sec-tight"><div class="wrap">
+    <div class="grid g4" style="margin-bottom:26px">
+      ${[['cal','Pick an event','Check the date, venue and employers taking part.'],['user','Register with MFJ','Sign in, or create an account in under a minute.'],['file','Get your ticket','Your QR ticket is sent to your email and portal.'],['brief','Bring your resume','Some employers interview on the spot.']].map(([i,t,d])=>`<div class="card"><span class="ib">${ic(i,20)}</span><h4>${t}</h4><p class="small muted">${d}</p></div>`).join('')}
+    </div>
+    <div class="sec-head" style="margin-bottom:16px"><h2>Upcoming career fairs</h2><span class="small muted">${FAIRS.length} events · ${S.fairRegs.length} registered</span></div>
+    <div class="grid g3">${FAIRS.map(fairCard).join('')}</div>
+  </div></section>`;
+}
+function vFair(){
+  const f=FAIRS.find(x=>x.id===S.fairId);const d=dt(f.d);const reg=S.fairRegs.find(r=>r.id===f.id);
+  const emps=Object.values(CO).slice(0,8).map(c=>c.n);
+  return `${pagehead(`<button data-go="career-fair">Career Fair</button><span>/</span><span>${esc(f.name)}</span>`,esc(f.name),`${fdate(f.d)}${f.d2?' – '+fdate(f.d2):''} · ${esc(f.venue)}`)}
+  <section class="sec-tight"><div class="wrap two" style="align-items:start">
+    <div class="grid">
+      <div class="panel" style="padding:22px;display:grid;gap:14px">
+        <h3>About this event</h3>
+        <p class="muted">${f.mode==='Virtual'?'Join from anywhere. Chat with recruiters, attend live talks and do video interviews in your browser.':'Meet recruiters in person, join walk-in interviews and get your resume reviewed by career coaches from MYCEC.'}</p>
+        <dl class="kv"><dt>Date</dt><dd>${fdate(f.d)}${f.d2?' – '+fdate(f.d2):''}</dd><dt>Time</dt><dd>9:00 am – 5:00 pm</dd><dt>Venue</dt><dd>${esc(f.venue)}</dd><dt>Format</dt><dd>${f.mode}</dd><dt>Employers</dt><dd>${f.emp} taking part</dd><dt>Vacancies</dt><dd>${num(f.vac)}</dd><dt>Entry</dt><dd>Free, registration required</dd></dl>
+      </div>
+      <div class="panel" style="padding:22px"><h3>Some of the employers taking part</h3><div class="skills">${emps.map(e=>`<span class="tag gr">${esc(e)}</span>`).join('')}</div></div>
+    </div>
+    <div class="panel" style="padding:22px;display:grid;gap:14px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 82px)">
+      <div class="fair-row"><div class="date"><b>${MON[d.getMonth()]}</b><strong>${d.getDate()}</strong></div><div><h3>${reg?'You are registered':'Register for this event'}</h3><p class="small muted">${reg?'Ticket '+reg.ref+' · show the QR code at the entrance.':'Free entry. You need a MYFutureJobs account.'}</p></div></div>
+      ${reg?`<div class="alert ok">${ic('check',20)}<span>Registered on ${reg.on}. Your ticket is in the Jobseeker Portal.</span></div><button class="btn btn-ghost" data-go="career-fair">Browse other events</button>`
+      :`<button class="btn btn-orange btn-block" data-act="fairreg" data-id="${f.id}">Register event</button><button class="btn btn-ghost btn-block" data-go="career-fair">Back to list</button>`}
+    </div>
+  </div></section>`;
+}
+function vFairDone(){
+  return `${pagehead('<button data-go="career-fair">Career Fair</button><span>/</span><span>Done</span>','You’re all set','')}
+  <section class="sec"><div class="wrap"><div class="panel center" style="padding:36px 24px;max-width:640px;margin:0 auto;display:grid;gap:14px">
+    <div class="big-ok">${ic('check',32)}</div>
+    <h2>See you at the fair</h2>
+    <p class="muted">You registered for ${S.fairRegs.length} event${S.fairRegs.length===1?'':'s'}. Tickets were sent to ${esc(S.user?S.user.email:'your email')} and are saved in the Jobseeker Portal.</p>
+    <ul class="ticks" style="text-align:left;max-width:420px;margin:0 auto">${S.fairRegs.map(r=>{const f=FAIRS.find(x=>x.id===r.id);return `<li>${ic('check',18)}<span><b>${esc(f.name)}</b><br><span class="small muted">${fdate(f.d)} · Ticket ${r.ref}</span></span></li>`}).join('')}</ul>
+    <div class="mfoot" style="justify-content:center"><button class="btn btn-orange" data-go="home">Back to homepage</button><button class="btn btn-ghost" data-go="career-fair">View career fairs</button></div>
+  </div></div></section>`;
+}
+
+/* ================= VIEW: MYCEC ================= */
+function nextWeekdays(n){const out=[];const d=new Date('2026-11-19T00:00:00');while(out.length<n){if(d.getDay()%6!==0)out.push(new Date(d));d.setDate(d.getDate()+1)}return out}
+const TIMES=['9:00 am','10:00 am','11:00 am','2:00 pm','3:00 pm','4:00 pm'];
+const isFull=(di,ti)=>((di*7+ti*3)%5===0);
+function vMycec(){
+  const m=S.mycec;
+  let detail='';
+  if(m.mode==='physical'){
+    const days=nextWeekdays(10);
+    detail=`<form class="panel grid" style="padding:22px" data-form="book" novalidate>
+      <div><p class="eyebrow">Booking slot · MYCEC Portal</p><h3 style="margin-top:4px">Book a visit to a MYCEC centre</h3></div>
+      <div class="grid g2" style="gap:14px">
+        <div class="field f"><label for="bBr">Centre</label><select id="bBr" data-mc="br">${MYCEC_BR.map(b=>`<option ${m.br===b?'selected':''}>${b}</option>`).join('')}</select></div>
+        <div class="field f"><label for="bSv">Service</label><select id="bSv" data-mc="sv">${MYCEC_SV.map(b=>`<option ${m.sv===b?'selected':''}>${b}</option>`).join('')}</select></div>
+      </div>
+      <div><h4 style="margin-bottom:8px">Date</h4><div class="slots">${days.map((d,i)=>`<button type="button" class="slot" data-act="mcdate" data-i="${i}" aria-pressed="${m.date===i}">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}<small>${d.getDate()} ${MON[d.getMonth()].charAt(0)+MON[d.getMonth()].slice(1).toLowerCase()}</small></button>`).join('')}</div></div>
+      <div><h4 style="margin-bottom:8px">Time ${m.date===null?'<span class="small muted" style="font-weight:400">· pick a date first</span>':''}</h4><div class="slots">${TIMES.map((t,i)=>{const full=m.date!==null&&isFull(m.date,i);return `<button type="button" class="slot" data-act="mctime" data-i="${i}" aria-pressed="${m.time===i}" ${m.date===null||full?'disabled':''}>${t}<small>${full?'Full':'Available'}</small></button>`}).join('')}</div></div>
+      <div class="grid g2" style="gap:14px">
+        <div class="field"><label for="bName">Full name</label><input class="inp" id="bName" name="name" value="${esc(S.user?S.user.name:'')}"><div class="err" hidden></div></div>
+        <div class="field"><label for="bPhone">Mobile number</label><input class="inp" id="bPhone" name="phone" inputmode="tel" placeholder="e.g. 012-345 6789" value="${esc(S.user&&S.user.phone||'')}"><div class="err" hidden></div></div>
+      </div>
+      <div class="err small" id="slotErr" hidden style="color:var(--bad)">Choose a date and a time slot.</div>
+      <div class="mfoot"><button class="btn btn-orange">Confirm booking</button></div>
+    </form>`;
+  }else if(m.mode==='metaverse'){
+    detail=`<div class="panel grid" style="padding:22px">
+      <div><p class="eyebrow">Access metaverse</p><h3 style="margin-top:4px">Choose a virtual space</h3><p class="small muted" style="margin-top:4px">Works in a desktop browser or a VR headset. No download needed.</p></div>
+      <div class="grid g2">
+        <button class="choice" data-act="redir" data-name="Metaverse MYCEC site" data-desc="Virtual MYCEC centre with career coaching booths."><span class="ib">${ic('vr',26)}</span><h3>Metaverse MYCEC</h3><span class="small muted">Walk into a virtual career centre, talk to a coach and take assessments.</span><span class="btn-link small">Enter ${ic('ext',14)}</span></button>
+        <button class="choice" data-act="redir" data-name="Metaverse Carnival site" data-desc="Virtual career carnival with employer booths."><span class="ib">${ic('star',26)}</span><h3>Metaverse Carnival</h3><span class="small muted">Visit employer booths, join live talks and drop your resume virtually.</span><span class="btn-link small">Enter ${ic('ext',14)}</span></button>
+      </div>
+    </div>`;
+  }
+  return `${pagehead('<span>MYCEC</span>','MYCEC','Career centres where you can meet a coach, sharpen your resume and practise interviews. Visit in person, or step into MYCEC in the metaverse.')}
+  <section class="sec-tight"><div class="wrap grid" style="gap:22px">
+    <div class="grid g4">${MYCEC_SV.map((s,i)=>`<div class="card"><span class="ib">${ic(['compass','file','users','chart'][i],20)}</span><h4>${s}</h4><p class="small muted">${['One-to-one session to plan your next move.','Get your resume reviewed and improved.','Mock interviews with feedback.','Find out which careers suit your strengths.'][i]}</p></div>`).join('')}</div>
+    <div><h2 style="font-size:22px;margin-bottom:12px">How would you like to visit?</h2>
+      <div class="grid g2">
+        <button class="choice" data-act="mcmode" data-m="physical" aria-pressed="${m.mode==='physical'}"><span class="ib">${ic('pin',26)}</span><h3>Physical</h3><span class="small muted">Book a slot at one of ${MYCEC_BR.length} MYCEC centres.</span></button>
+        <button class="choice" data-act="mcmode" data-m="metaverse" aria-pressed="${m.mode==='metaverse'}"><span class="ib">${ic('vr',26)}</span><h3>Metaverse</h3><span class="small muted">Visit MYCEC or the Career Carnival online.</span></button>
+      </div>
+    </div>
+    ${detail}
+  </div></section>`;
+}
+
+/* ================= VIEW: Training ================= */
+function vTraining(){
+  const cats=[...new Set(TRAININGS.map(t=>t.cat))];
+  const list=TRAININGS.filter(t=>(!S.trCat||t.cat===S.trCat)&&(!S.trMode||t.mode.startsWith(S.trMode)));
+  return `${pagehead('<span>Training</span>','Training','Short courses to learn new skills or get certified. Most are fully funded. Applications are handled by each training provider.')}
+  <section class="sec-tight"><div class="wrap">
+    <div class="panel toolbar" style="border-radius:var(--r);margin-bottom:18px">
+      <div class="tabs" role="tablist" style="margin:0"><button role="tab" aria-selected="${!S.trCat}" data-act="trcat" data-c="">All</button>${cats.map(c=>`<button role="tab" aria-selected="${S.trCat===c}" data-act="trcat" data-c="${c}">${c}</button>`).join('')}</div>
+      <label class="small muted">Mode <select id="trMode" data-filter="trMode"><option value="">Any</option>${['Online','Physical','Hybrid'].map(x=>`<option ${S.trMode===x?'selected':''}>${x}</option>`).join('')}</select></label>
+    </div>
+    <p class="small muted" style="margin-bottom:12px">${list.length} programme${list.length===1?'':'s'} open for registration</p>
+    <div class="grid g3">${list.map(t=>`<div class="card">
+      <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="tag">${t.cat}</span><span class="tag ${t.fee==='Fully funded'?'ok':'gr'}">${t.fee}</span></div>
+      <h3>${esc(t.t)}</h3><p class="small muted">${esc(t.p)}</p>
+      <div class="meta"><span>${ic(t.mode==='Online'?'globe':'pin',15)}${t.mode}</span><span>${ic('clock',15)}${t.dur}</span><span>${ic('users',15)}${t.seats} seats left</span></div>
+      <div class="foot"><button class="btn btn-orange btn-sm" data-act="trapply" data-id="${t.id}">Apply training</button></div></div>`).join('')||`<div class="empty panel" style="grid-column:1/-1">No programmes match. <button class="btn btn-ghost" data-act="trclear">Show all</button></div>`}</div>
+  </div></section>`;
+}
+
+/* ================= VIEW: Insight ================= */
+function vInsight(){
+  const I=[['users','MYFutureJobs Career Hub','Guides, videos and articles on writing resumes, interviews and changing careers.','MFJ Career Hub page'],['star','MYFutureJobs Galaxy','Skills recognition and learning space for informal and gig workers.','MYFutureJobs Galaxy site'],['chart','Labour Market Exchange','Data on demand for jobs and skills, wages and hiring trends by state and industry.','LMX site']];
+  return `${pagehead('<span>MYFutureJobs Insight</span>','MYFutureJobs Insight','Research, data and learning resources to help you make better career decisions.')}
+  <section class="sec-tight"><div class="wrap grid" style="gap:22px">
+    <div class="grid g3">${I.map(([i,t,d,dest])=>`<div class="card"><span class="ib">${ic(i,22)}</span><h3>${t}</h3><p class="small muted">${d}</p><div class="foot"><button class="btn btn-blue btn-sm" data-act="redir" data-name="${dest}" data-desc="${t}">Open ${ic('ext',15)}</button></div></div>`).join('')}</div>
+    <div class="panel" style="padding:22px"><div class="sec-head" style="margin-bottom:14px"><h3>Labour market snapshot · Q3 2026</h3><span class="tag gr">Sample figures</span></div>
+      <div class="grid g4">${[['Unemployment rate','3.1%','▼ 0.1 pt'],['Median monthly wage','RM 2,745','▲ 4.2%'],['New vacancies','184,300','▲ 6.8%'],['Placements','96,540','▲ 9.1%']].map(([l,v,d])=>`<div class="stat"><div class="l">${l}</div><div class="v">${v}</div><div class="d">${d} vs Q2</div></div>`).join('')}</div></div>
+  </div></section>`;
+}
+
+/* ================= VIEW: Collaboration ================= */
+function vCollab(){
+  return `${pagehead('<span>Collaboration</span>','Collaboration','Partners recruiting through MYFutureJobs. Choose a partner to see their opportunities and apply.')}
+  <section class="sec-tight"><div class="wrap"><div class="partners">${PARTNERS.map(partnerTile).join('')}</div></div></section>`;
+}
+
+/* ================= VIEW: Initiatives ================= */
+function vInit(){
+  return `${pagehead('<span>General / Initiatives</span>','General / Initiatives','Government and PERKESO programmes for jobseekers who lost their job, want to return to work, or need protection.')}
+  <section class="sec-tight"><div class="wrap grid g3">${INITS.map(initCard).join('')}</div></section>`;
+}
+
+/* ================= VIEW: Employer homepage ================= */
+function vEmployer(){
+  const ST=[['Registered Employers',168420,'▲ 2,310 this month'],['Active Jobseekers',1284905,'▲ 18,742 this month'],['Active Vacancies',312768,'▲ 6.8% vs last month'],['Successful Placements',1046331,'▲ 9,804 this month']];
+  return `<section class="hero"><div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow" style="color:var(--orange)">Employer homepage</p>
+      <h1 style="margin-top:10px">Hire from <span>1.28 million</span> active jobseekers, at no cost.</h1>
+      <p class="lead">Post vacancies, get matched candidates and use recruitment support programmes. Everything starts from the Employer Portal.</p>
+      <div class="mfoot" style="justify-content:flex-start;margin-top:24px"><button class="btn btn-orange" data-act="redir" data-name="Employer Portal" data-desc="Sign in to post vacancies, screen candidates and manage interviews.">${ic('door',18)} Sign In Employer</button><button class="btn btn-ghost" data-act="scrollto" data-to="support">Recruitment support</button></div>
+    </div>
+    <aside class="ai-card">
+      <h3 style="margin-top:0">New to MYFutureJobs?</h3>
+      <ul class="ticks" style="margin:14px 0 18px">
+        <li>${ic('check',18)}Post unlimited vacancies for free</li>
+        <li>${ic('check',18)}AI-matched candidate shortlists</li>
+        <li>${ic('check',18)}Hiring incentives for eligible hires</li>
+        <li>${ic('check',18)}Walk-in interviews at career fairs</li>
+      </ul>
+      <button class="btn btn-blue btn-block" data-act="redir" data-name="Employer Portal" data-desc="Register your company with your SSM number.">Register your company</button>
+    </aside>
+  </div></section>
+
+  <section class="sec" id="stats"><div class="wrap">
+    <div class="sec-head"><div><p class="eyebrow">Statistic</p><h2 style="margin-top:6px">MYFutureJobs in numbers</h2></div><span class="tag gr">Sample figures · as of Nov 2026</span></div>
+    <div class="grid g4">${ST.map(([l,v,d])=>`<div class="stat"><div class="l">${l}</div><div class="v" data-count="${v}">${num(v)}</div><div class="d">${d}</div></div>`).join('')}</div>
+  </div></section>
+
+  <section class="sec band" id="support"><div class="wrap">
+    <div class="sec-head"><div><p class="eyebrow">Recruitment Support Menu</p><h2 style="margin-top:6px">Recruitment support</h2><p>Programmes and services that help you find, train and keep the right people.</p></div></div>
+    <div class="grid g4">${[['users','PAPD','Placement and recruitment programme for employers hiring through MYFutureJobs.','PAPD page'],['user','Recruitment Specialist','A dedicated specialist sources and screens candidates for your hard-to-fill roles.','Recruitment Specialist page'],['bld','IPE','Employer programme to support hiring and work placement.','IPE page'],['star','Branding Partnerships','Raise your employer brand with features, campaigns and fair booths.','Branding Partnerships page']].map(([i,t,d,dest])=>`<div class="card"><span class="ib">${ic(i,22)}</span><h3>${t}</h3><p class="small muted">${d}</p><div class="foot"><button class="btn btn-ghost btn-sm" data-act="redir" data-name="${dest}" data-desc="${t}">Learn more ${ic('ext',15)}</button></div></div>`).join('')}</div>
+  </div></section>
+
+  <section class="sec" id="stories"><div class="wrap">
+    <div class="sec-head"><div><p class="eyebrow">Employer Success Stories</p><h2 style="margin-top:6px">Employers who hired through MYFutureJobs</h2></div><span class="tag gr">Sample stories</span></div>
+    <div class="grid g3">${[['Pinnacle Electronics (M) Sdn Bhd','Manufacturing · Pulau Pinang','We filled 140 operator roles in six weeks by combining the career fair with AI-matched shortlists.','Head of Talent'],['Gerak Logistics Sdn Bhd','Logistics · Selangor','The Recruitment Specialist found us certified forklift operators we could not reach through job boards.','HR Manager'],['Laguna Bay Resort Langkawi','Hospitality · Kedah','Hiring locally cut our onboarding time and the incentive offset a big part of the training cost.','General Manager']].map(([c,s,q,r])=>`<div class="card"><p class="quote">${q}</p><div class="foot" style="border-top:1px solid var(--line);padding-top:12px;margin-top:auto"><div><strong class="small">${r}, ${c}</strong><p class="small muted">${s}</p></div></div></div>`).join('')}</div>
+  </div></section>
+
+  <section class="sec band-navy" id="incentives"><div class="wrap">
+    <div class="sec-head"><div><p class="eyebrow" style="color:var(--orange)">Incentive Programmes</p><h2 style="margin-top:6px">Incentives for hiring and training</h2><p>Eligible employers can claim support when they hire or train people registered with MYFutureJobs.</p></div></div>
+    <div class="grid g3">${[['Hiring incentive','Monthly support for each eligible new hire, for a fixed period.'],['Training incentive','Help with the cost of training new hires to the skills you need.'],['Targeted groups','Higher support for hiring persons with disabilities, ex-offenders, older workers and the long-term unemployed.']].map(([t,d])=>`<div class="card" style="background:var(--navy-2);border-color:rgba(255,255,255,.12);color:#DCE6F7"><span class="ib" style="background:var(--orange);color:#1E1300">${ic('gift',20)}</span><h3 style="color:#fff">${t}</h3><p class="small">${d}</p><div class="foot"><button class="btn btn-orange btn-sm" data-act="redir" data-name="Incentive Programmes page" data-desc="${t}">Check eligibility ${ic('ext',15)}</button></div></div>`).join('')}</div>
+  </div></section>`;
+}
+
+/* ================= router ================= */
+const ROUTES={home:vHome,employer:vEmployer,search:vSearch,trending:vTrending,ai:vAI,apply:vApply,'career-journey':vCJ,'career-fair':vFairs,fair:vFair,'fair-done':vFairDone,mycec:vMycec,training:vTraining,insight:vInsight,collaboration:vCollab,initiatives:vInit};
+let pendingScroll=null;
+function render(keepScroll=false){
+  let r=curRoute();
+  if(r==='fair'&&!S.fairId){r='career-fair'}
+  if(r==='apply'&&(!S.applyId||!S.user)){r='search'}
+  if(r==='fair-done'&&!S.fairRegs.length){r='career-fair'}
+  const y=window.scrollY;
+  $('#app').innerHTML=ROUTES[r]();
+  S.moreOpen=false;$('#nav').classList.remove('open');$('#hamb').setAttribute('aria-expanded','false');
+  renderHeader(r);
+  after(r);
+  if(pendingScroll){const el=document.getElementById(pendingScroll);pendingScroll=null;el&&setTimeout(()=>el.scrollIntoView({behavior:'smooth'}),40)}
+  else if(keepScroll)window.scrollTo(0,y);
+  else window.scrollTo(0,0);
+}
+function go(r,scroll){if(scroll)pendingScroll=scroll;if((location.hash.slice(1)||'home')===r)render();else location.hash=r}
+window.addEventListener('hashchange',()=>render());
+
+function after(r){
+  if(r==='ai'&&S.ai.step==='upload'){
+    const inp=$('#cv'),drop=$('#drop');
+    inp.addEventListener('change',()=>inp.files[0]&&readFile(inp.files[0]));
+    ['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over')}));
+    ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over')}));
+    drop.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];f&&readFile(f)});
+  }
+  if(r==='employer'){
+    $$('[data-count]').forEach(el=>{const t=+el.dataset.count;const t0=performance.now();const d=900;
+      if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+      const step=n=>{const p=Math.min(1,(n-t0)/d);el.textContent=num(Math.round(t*(1-Math.pow(1-p,3))));if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)});
+  }
+}
+function readFile(f){
+  if(/\.txt$/i.test(f.name)&&f.size<5*1024*1024){const fr=new FileReader();fr.onload=()=>aiAnalyse(f,String(fr.result));fr.readAsText(f)}
+  else aiAnalyse(f,'');
+}
+
+/* ================= actions ================= */
+const A={
+  close:()=>closeModal(),
+  aud:t=>go(t.dataset.to),
+  more:()=>{S.moreOpen=!S.moreOpen;const m=$('.more-menu');m&&(m.hidden=!S.moreOpen);$('[data-act="more"]').setAttribute('aria-expanded',S.moreOpen)},
+  redir:t=>redirect(t.dataset.name,t.dataset.desc),
+  signinjs:()=>redirect('Jobseeker Portal','Sign in to manage your profile, resume, applications and event tickets.'),
+  account:()=>openModal(`${mhead(esc(S.user.name),'Signed in')}
+    <div class="mb"><dl class="kv"><dt>Email</dt><dd>${esc(S.user.email)}</dd><dt>Applications</dt><dd>${S.apps.length}</dd><dt>Event tickets</dt><dd>${S.fairRegs.length}</dd><dt>MYCEC bookings</dt><dd>${S.bookings.length}</dd></dl>
+    ${S.apps.length?`<div><h4>Your applications</h4><ul class="ticks" style="margin-top:8px">${S.apps.map(a=>`<li>${ic('check',18)}<span>${esc(job(a.id).title)} <span class="small muted">· ${a.ref}</span></span></li>`).join('')}</ul></div>`:''}
+    <div class="mfoot"><button class="btn btn-ghost" data-act="logout">Sign out</button><button class="btn btn-blue" data-act="redir" data-name="Jobseeker Portal" data-desc="Your full profile and application history.">Open Jobseeker Portal ${ic('ext',15)}</button></div></div>`),
+  logout:()=>{S.user=null;closeModal();toast('Signed out','door');render(true)},
+  authtab:t=>authModal(t.dataset.tab,t.dataset.ctx),
+  qs:t=>{S.q=t.dataset.q;S.loc='';S.indF='';S.typeF='';S.minSal=0;go('search')},
+  indsearch:t=>{S.q='';S.loc='';S.indF=t.dataset.ind;S.typeF='';S.minSal=0;go('search')},
+  clearf:()=>{S.indF='';S.typeF='';S.minSal=0;S.sort='rel';render(true)},
+  clearall:()=>{S.q='';S.loc='';S.indF='';S.typeF='';S.minSal=0;render(true)},
+  jobview:t=>{
+    const j=job(t.dataset.id),c=CO[j.co],from=t.dataset.from,applied=S.apps.some(a=>a.id===j.id);
+    openModal(`${mhead(esc(j.title),esc(c.n))}<div class="mb">
+      <div class="meta"><span>${ic('pin',15)}${esc(j.city)}, ${esc(j.state)}</span><span>${ic('brief',15)}${j.type}</span><span>${ic('bld',15)}${IND[j.ind]}</span></div>
+      <p class="sal" style="font-size:18px">${rm(j.min)} – ${num(j.max)} <span class="small muted" style="font-weight:400">per month</span></p>
+      <div><h4>About the role</h4><p class="small muted" style="margin-top:4px">${esc(c.n)} is hiring a ${esc(j.title)} in ${esc(j.city)}. You'll work with a supportive team, with EPF, SOCSO, annual leave and medical benefits from day one.</p></div>
+      <div><h4>Skills required</h4><div class="skills">${j.skills.map(s=>`<span class="tag gr">${esc(s)}</span>`).join('')}</div></div>
+      <div class="mfoot">${applied?`<span class="tag ok">${ic('check',14)} You've applied</span>`:`<button class="btn btn-ghost" data-act="close">Not now</button><button class="btn btn-orange" data-act="apply" data-id="${j.id}" data-from="${from}">Apply job</button>`}</div></div>`,{wide:true});
+  },
+  apply:t=>{
+    const id=+t.dataset.id,from=t.dataset.from||'search';
+    requireLogin(()=>{closeModalSilently();S.applyId=id;S.applyFrom=from;S.applyDone=false;go('apply')},'Sign in to the Jobseeker Portal to apply for this job.');
+  },
+  applyback:()=>{S.applyDone=false;go(S.applyFrom==='ai'?'ai':'search')},
+  aisample:()=>{const f={name:'Sample_Resume_NurAisyah.txt',size:SAMPLE_RESUME.length};aiAnalyse(f,SAMPLE_RESUME)},
+  aireset:()=>{S.ai={step:'upload',file:null,text:'',skills:[],err:null};render()},
+  aishow:()=>requireLogin(()=>{S.ai.step='results';render();toast('Your Top 10 matches are ready','spark')},'Sign in to the Jobseeker Portal to see your Top 10 matching vacancies.'),
+  skrm:t=>{S.ai.skills.splice(+t.dataset.i,1);render(true)},
+  cjgo:t=>{S.cj=t.dataset.tab;go('career-journey')},
+  cjtab:t=>{S.cj=t.dataset.tab;render(true)},
+  'go-mycec':()=>go('mycec'),
+  fairview:t=>{S.fairId=t.dataset.id;go('fair')},
+  fairreg:t=>{
+    const f=FAIRS.find(x=>x.id===t.dataset.id);
+    openModal(`${mhead('Register for this event?','Register event')}<div class="mb"><p><b>${esc(f.name)}</b><br><span class="muted small">${fdate(f.d)} · ${esc(f.venue)}</span></p><p class="small muted">You'll need to sign in with your MYFutureJobs account. Registration is free.</p>
+      <div class="mfoot"><button class="btn btn-ghost" data-act="close">No, go back</button><button class="btn btn-orange" data-act="fairyes" data-id="${f.id}">Yes, register</button></div></div>`);
+  },
+  fairyes:t=>{const id=t.dataset.id;requireLogin(()=>applyEvent(id),'Sign in to MYFutureJobs to register for this career fair.');if(S.user){}},
+  fairmore:()=>{closeModal();go('career-fair')},
+  fairend:()=>{closeModal();go('fair-done')},
+  mcmode:t=>{S.mycec.mode=t.dataset.m;render(true)},
+  mcdate:t=>{S.mycec.date=+t.dataset.i;if(S.mycec.time!==null&&isFull(S.mycec.date,S.mycec.time))S.mycec.time=null;render(true)},
+  mctime:t=>{S.mycec.time=+t.dataset.i;render(true)},
+  trcat:t=>{S.trCat=t.dataset.c;render(true)},
+  trclear:()=>{S.trCat='';S.trMode='';render(true)},
+  trapply:t=>{
+    const x=TRAININGS.find(y=>y.id===+t.dataset.id);
+    openModal(`${mhead(esc(x.t),'Apply training')}<div class="mb">
+      <dl class="kv"><dt>Provider</dt><dd>${esc(x.p)}</dd><dt>Mode</dt><dd>${x.mode}</dd><dt>Duration</dt><dd>${x.dur}</dd><dt>Fee</dt><dd>${x.fee}</dd><dt>Seats left</dt><dd>${x.seats}</dd></dl>
+      <div class="alert info small">${ic('ext',18)}<span>Registration is completed on the training provider's website. Have your MyKad and latest resume ready.</span></div>
+      <div class="mfoot"><button class="btn btn-ghost" data-act="close">Cancel</button><button class="btn btn-orange" data-act="redir" data-name="${esc(x.p)} website" data-desc="${esc(x.t)}">Continue to provider ${ic('ext',15)}</button></div></div>`);
+  },
+  partner:t=>{
+    const p=PARTNERS.find(x=>x.id===t.dataset.id);
+    openModal(`${mhead(`<span style="color:${p.c}">${p.n}</span>`,'Collaboration partner')}<div class="mb">
+      <p class="muted">${p.d}</p>
+      <div><h4>Open roles</h4><div class="skills">${p.roles.map(r=>`<span class="tag gr">${r}</span>`).join('')}</div></div>
+      <div class="alert info"><strong>Apply for a job with ${p.n}?</strong></div>
+      <div class="mfoot"><button class="btn btn-ghost" data-act="redir" data-name="${p.n} collaboration page" data-desc="About the partnership and upcoming hiring drives.">No, view collaboration page</button><button class="btn btn-orange" data-act="redir" data-name="Candidate Portal" data-desc="${p.n} vacancies, filtered for you.">Yes, apply job ${ic('ext',15)}</button></div></div>`);
+  },
+  scrollto:t=>{const el=document.getElementById(t.dataset.to);el&&el.scrollIntoView({behavior:'smooth'})},
+  flows:()=>openModal(`${mhead('Flow guide','Prototype')}<div class="mb"><p class="small muted">Every branch in the flowchart is clickable. Jump straight to one:</p>
+    <div class="flow-list">
+      <div class="flow-grp">Jobseeker</div>
+      ${[['ai','AI Job Recommendation','Upload resume → AI review → login/register → Top 10 → apply'],['search','Search Bar','Input search → vacancy results → apply → login → application'],['trending','Trending Jobs','Top 10 industries → vacancy results'],['career-journey','Career Journey','Student / Job Seekers / Informal to Formal'],['@signin','Sign In JS','Redirect to Jobseeker Portal'],['career-fair','Career Fair','Info → list → register → login/register → apply event → more events?'],['mycec','MYCEC','Physical booking or metaverse access'],['training','Training','Public info → list → apply → provider website'],['insight','MYFutureJobs Insight','Career Hub · Galaxy · Labour Market Exchange'],['collaboration','Collaboration','Prowira · Grab · GLC & GLIC · Carsome → apply job?'],['initiatives','General / Initiatives','REPP · Lindung Kerjaya · Budget 2026']].map(([r,t,d])=>`<button data-act="flowgo" data-r="${r}"><span><b>${t}</b><span>${d}</span></span>${ic('arrow',16)}</button>`).join('')}
+      <div class="flow-grp">Employer</div>
+      ${[['employer','Employer homepage','Sign In Employer · Recruitment Support · Statistic · Stories · Incentives']].map(([r,t,d])=>`<button data-act="flowgo" data-r="${r}"><span><b>${t}</b><span>${d}</span></span>${ic('arrow',16)}</button>`).join('')}
+    </div>
+    <div class="mfoot"><button class="btn btn-ghost btn-sm" data-act="resetdemo">Reset demo</button></div></div>`),
+  flowgo:t=>{closeModal();const r=t.dataset.r;if(r==='@signin'){go('home');setTimeout(()=>A.signinjs(),60)}else go(r)},
+  resetdemo:()=>{location.hash='home';location.reload()}
+};
+function applyEvent(id){
+  const f=FAIRS.find(x=>x.id===id);
+  if(!S.fairRegs.find(r=>r.id===id))S.fairRegs.push({id,ref:ref('CF'),on:fdate('2026-11-18')});
+  const r=S.fairRegs.find(x=>x.id===id);
+  if(curRoute()==='fair')render(true);
+  openModal(`<div class="mb center" style="padding-top:28px"><div class="big-ok">${ic('check',32)}</div><h3>Event applied</h3>
+    <p class="muted">You're registered for <b>${esc(f.name)}</b> on ${fdate(f.d)}.<br>Ticket <b>${r.ref}</b> was sent to ${esc(S.user.email)}.</p>
+    <div class="alert info" style="justify-content:center"><strong>Apply for more events?</strong></div>
+    <div class="mfoot" style="justify-content:center"><button class="btn btn-ghost" data-act="fairend">No, I'm done</button><button class="btn btn-orange" data-act="fairmore">Yes, show events</button></div></div>`,{onClose:null});
+}
+
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]');
+  if(g){e.preventDefault();if($('#modalBg').hidden===false)closeModalSilently();go(g.dataset.go,g.dataset.scroll);return}
+  const sc=e.target.closest('a[data-scroll]');
+  if(sc){e.preventDefault();$('#nav').classList.remove('open');const el=document.getElementById(sc.dataset.scroll);el&&el.scrollIntoView({behavior:'smooth'});return}
+  const t=e.target.closest('[data-act]');
+  if(t&&A[t.dataset.act]){e.preventDefault();A[t.dataset.act](t,e);return}
+  if(e.target.id==='modalBg')closeModal();
+  if(S.moreOpen&&!e.target.closest('.more')){S.moreOpen=false;const m=$('.more-menu');m&&(m.hidden=true)}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modalBg').hidden)closeModal()});
+$('#hamb').addEventListener('click',()=>{const n=$('#nav');n.classList.toggle('open');$('#hamb').setAttribute('aria-expanded',n.classList.contains('open'));$('#hamb').innerHTML=ic(n.classList.contains('open')?'x':'menu',20)});
+document.addEventListener('change',e=>{
+  const f=e.target.dataset.filter;
+  if(f){S[f]=f==='minSal'?+e.target.value:e.target.value;render(true);return}
+  const mc=e.target.dataset.mc;if(mc){S.mycec[mc]=e.target.value}
+});
+
+/* ================= forms ================= */
+const F={
+  search:f=>{S.q=f.elements.q.value.trim();S.loc=f.elements.loc.value;S.indF='';S.typeF='';S.minSal=0;go('search')},
+  login:f=>{
+    const em=f.elements.email.value.trim(),pw=f.elements.pass.value;
+    const a=fieldErr(f,'email',!em?'Enter your email or IC number.':!emailOk(em)?'Enter a valid email or a 12-digit IC number.':'');
+    const b=fieldErr(f,'pass',pw.length<6?'Password must be at least 6 characters.':'');
+    if(!a||!b)return;
+    const base=em.includes('@')?em.split('@')[0].replace(/[._\d]+/g,' ').trim():'Jobseeker';
+    S.user={name:base?base.replace(/\b\w/g,c=>c.toUpperCase()):'Jobseeker',email:em.includes('@')?em:'ic-'+em.slice(-4)+'@myfuturejobs.example'};
+    toast('Signed in as '+S.user.name,'user');finishAuth();
+  },
+  register:f=>{
+    const n=f.elements.name.value.trim(),icn=f.elements.ic.value.trim(),em=f.elements.email.value.trim(),pw=f.elements.pass.value;
+    const ok=[fieldErr(f,'name',n.length<3?'Enter your full name.':''),fieldErr(f,'ic',!/^\d{6}-?\d{2}-?\d{4}$/.test(icn)?'Enter 12 digits, e.g. 990101-14-5678.':''),fieldErr(f,'email',!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)?'Enter a valid email address.':''),fieldErr(f,'pass',pw.length<6?'Password must be at least 6 characters.':'')].every(Boolean);
+    if(!ok)return;
+    S.user={name:n,email:em};
+    $('#modal').innerHTML=`<div class="mb center" style="padding-top:28px"><div class="big-ok">${ic('check',32)}</div><h3>Registration successful</h3><p class="muted">Welcome to MYFutureJobs, ${esc(n.split(' ')[0])}. We sent a confirmation to ${esc(em)}.</p><div class="mfoot" style="justify-content:center"><button class="btn btn-orange" data-act="authdone">Continue</button></div></div>`;
+    renderHeader(curRoute());
+  },
+  apply:f=>{
+    const nm=f.elements.name.value.trim(),ph=f.elements.phone.value.trim(),sal=f.elements.sal.value.trim();
+    const ok=[fieldErr(f,'name',nm.length<3?'Enter your full name.':''),fieldErr(f,'phone',!/^0\d[\d\s-]{7,11}$/.test(ph)?'Enter a Malaysian mobile number, e.g. 012-345 6789.':''),fieldErr(f,'sal',!/^\d{3,6}$/.test(sal)?'Enter an amount in RM, numbers only.':'')].every(Boolean);
+    const agree=f.elements.ok.checked;$('#okErr').hidden=agree;
+    if(!ok||!agree)return;
+    S.user.phone=ph;
+    S.apps.push({id:S.applyId,ref:ref('APP'),cv:f.elements.cv.value});
+    S.applyDone=true;toast('Application submitted');render();
+  },
+  skadd:f=>{const v=f.elements.s.value.trim();if(!v)return;const m=SKILLS.find(s=>s.toLowerCase()===v.toLowerCase())||v;if(!S.ai.skills.some(s=>s.toLowerCase()===m.toLowerCase()))S.ai.skills.push(m);render(true);setTimeout(()=>$('#skIn')&&$('#skIn').focus(),0)},
+  book:f=>{
+    const m=S.mycec;const nm=f.elements.name.value.trim(),ph=f.elements.phone.value.trim();
+    const ok=[fieldErr(f,'name',nm.length<3?'Enter your full name.':''),fieldErr(f,'phone',!/^0\d[\d\s-]{7,11}$/.test(ph)?'Enter a Malaysian mobile number, e.g. 012-345 6789.':'')].every(Boolean);
+    const slot=m.date!==null&&m.time!==null;$('#slotErr').hidden=slot;
+    if(!ok||!slot)return;
+    const d=nextWeekdays(10)[m.date];const r=ref('MYCEC');
+    S.bookings.push({ref:r});
+    openModal(`<div class="mb center" style="padding-top:28px"><div class="big-ok">${ic('check',32)}</div><h3>Slot booked</h3>
+      <dl class="kv" style="text-align:left;max-width:340px;margin:0 auto"><dt>Reference</dt><dd>${r}</dd><dt>Centre</dt><dd>${esc(m.br)}</dd><dt>Service</dt><dd>${esc(m.sv)}</dd><dt>When</dt><dd>${d.getDate()} ${MON[d.getMonth()].charAt(0)+MON[d.getMonth()].slice(1).toLowerCase()} 2026, ${TIMES[m.time]}</dd><dt>Name</dt><dd>${esc(nm)}</dd></dl>
+      <p class="small muted">An SMS reminder will be sent to ${esc(ph)} a day before. Manage this booking in the MYCEC Portal.</p>
+      <div class="mfoot" style="justify-content:center"><button class="btn btn-ghost" data-act="close">Done</button><button class="btn btn-blue" data-act="redir" data-name="MYCEC Portal" data-desc="Manage or reschedule your booking.">Open MYCEC Portal ${ic('ext',15)}</button></div></div>`);
+    S.mycec={...S.mycec,date:null,time:null};
+  }
+};
+A.authdone=()=>{toast('Account created');finishAuth()};
+document.addEventListener('submit',e=>{const f=e.target;if(f.dataset.form&&F[f.dataset.form]){e.preventDefault();F[f.dataset.form](f)}});
+
+render();
+</script>
+</body>
+</html>

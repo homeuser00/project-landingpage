@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Concept C · Bento Home</title>
+<style>
+/* Concept C: Apple "store / compare" language — whole homepage is a bento of every flowchart menu with live mini-visuals, then an iPhone-style "Which path is right for you?" compare and "Why" card rail. */
+:root{--ink:#1d1d1f;--sub:#6e6e73;--soft:#f5f5f7;--line:#d2d2d7;--blue:#1F5FC4;--navy:#0E2A5C;--orange:#F7941D;--ok:#17855A;
+--disp:"SF Pro Display","Inter Display","Inter",-apple-system,system-ui,sans-serif;--txt:"SF Pro Text","Inter",-apple-system,system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--soft);color:var(--ink);font:17px/1.47 var(--txt);-webkit-font-smoothing:antialiased;letter-spacing:-.022em}
+h1,h2,h3{font-family:var(--disp);margin:0;letter-spacing:-.03em}
+.gnav{height:44px;background:rgba(251,251,253,.9);border-bottom:1px solid rgba(0,0,0,.06);display:flex;justify-content:center;align-items:center;gap:34px;font-size:12px;color:#333}
+.gnav b{font:700 14px var(--disp);color:var(--navy)}.gnav b i{font-style:normal;color:var(--orange)}
+.w{max-width:1180px;margin:0 auto;padding:0 20px}
+.top{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:end;padding:70px 0 40px}
+.top h1{font-size:84px;line-height:1;font-weight:700}
+.top h1 span:nth-child(2){color:var(--orange)}.top h1 span:nth-child(3){color:var(--blue)}
+.top p{font-size:21px;color:var(--sub);margin-bottom:22px;line-height:1.4}
+.search{background:#fff;border-radius:20px;padding:8px;display:flex;gap:8px;box-shadow:0 10px 30px rgba(0,0,0,.06)}
+.search span{flex:1;padding:14px 16px;color:#86868b;font-size:16px;background:var(--soft);border-radius:14px}
+.search b{background:var(--blue);color:#fff;border-radius:14px;padding:14px 22px;font-weight:600;font-size:16px}
+.bento{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:150px;gap:16px;padding-bottom:100px}
+.t{background:#fff;border-radius:26px;padding:24px;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.t .k{font-size:13px;font-weight:600;color:var(--sub);display:flex;justify-content:space-between}
+.t .k i{font-style:normal;width:28px;height:28px;border-radius:50%;background:var(--soft);display:grid;place-items:center;color:var(--ink);font-size:15px}
+.t h3{font-size:26px;font-weight:600;line-height:1.12;margin-top:8px}
+.c4{grid-column:span 4}.c3{grid-column:span 3}.c5{grid-column:span 5}.c6{grid-column:span 6}.c7{grid-column:span 7}.c8{grid-column:span 8}
+.r2{grid-row:span 2}.r3{grid-row:span 3}
+.ai{background:linear-gradient(155deg,#FFB24D 0%,#F7941D 35%,#E8512B 100%);color:#fff}.ai .k{color:rgba(255,255,255,.8)}.ai .k i{background:rgba(255,255,255,.2);color:#fff}
+.ai h3{font-size:40px}
+.mini{position:absolute;left:24px;right:24px;bottom:24px;background:#fff;color:var(--ink);border-radius:18px;padding:14px 16px;box-shadow:0 20px 40px rgba(0,0,0,.15)}
+.mini .r{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:14px}.mini .r+.r{border-top:1px solid #eee}
+.mini .r b{font:700 15px var(--disp);color:var(--ok)}
+.drop{margin-top:16px;border:1.5px dashed rgba(255,255,255,.7);border-radius:16px;padding:14px;text-align:center;font-weight:600;font-size:15px}
+.navy{background:var(--navy);color:#fff}.navy .k{color:#9fb3d6}.navy .k i{background:rgba(255,255,255,.12);color:#fff}
+.dark{background:#000;color:#fff}.dark .k{color:#a1a1a6}.dark .k i{background:#1c1c1e;color:#fff}
+.bars{display:flex;align-items:flex-end;gap:7px;flex:1;margin-top:12px}
+.bars i{flex:1;border-radius:6px 6px 3px 3px;background:#dfe7f5}.bars i.h{background:var(--blue)}
+.list{margin-top:10px;font-size:14px;display:grid;gap:6px}
+.list div{display:flex;justify-content:space-between}.list span{color:var(--ok);font-weight:600}
+.big{font:700 64px/1 var(--disp);letter-spacing:-.05em}
+.seg{display:flex;background:var(--soft);border-radius:999px;padding:4px;margin-top:auto;font-size:14px;font-weight:600}
+.seg span{flex:1;text-align:center;padding:8px;border-radius:999px;color:var(--sub)}.seg span.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.steps{display:flex;gap:8px;margin-top:auto;flex-wrap:wrap}.steps span{background:var(--soft);border-radius:999px;padding:7px 13px;font-size:13px;font-weight:600}
+.dark .steps span{background:#1c1c1e}
+.logos{margin-top:auto;display:flex;gap:16px;font:800 20px var(--disp);letter-spacing:-.03em;flex-wrap:wrap}
+.arrow{margin-top:auto;color:var(--blue);font-size:15px}
+.dark .arrow,.navy .arrow{color:#6ea8ff}
+.cmp{background:#fff;padding:100px 0}
+.cmp h2{font-size:56px;text-align:center;font-weight:700}
+.cmp .sub{text-align:center;color:var(--blue);margin-top:10px;font-size:17px}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:60px}
+.col{text-align:center;padding:0 34px}.col+.col{border-left:1px solid #e8e8ed}
+.icon{width:120px;height:150px;margin:0 auto 26px;border-radius:28px;position:relative}
+.col h3{font-size:30px;font-weight:600}.col .tag{color:var(--sub);font-size:15px;margin-top:6px;min-height:46px}
+.col .btn{display:inline-block;background:var(--blue);color:#fff;border-radius:999px;padding:9px 20px;font-size:15px;margin-top:18px}
+.col .lnk{display:block;color:var(--blue);margin-top:12px;font-size:15px}
+.feat{border-top:1px solid #e8e8ed;margin-top:28px;padding-top:24px;display:grid;gap:26px}
+.feat div{font-size:14px;color:var(--ink)}.feat div b{display:block;font:700 26px var(--disp);letter-spacing:-.03em;margin-bottom:2px}
+.feat div span{color:var(--sub)}
+.why{padding:100px 0;overflow:hidden}
+.why h2{font-size:48px;font-weight:700}.why h2 span{color:var(--sub)}
+.rail{display:flex;gap:18px;margin-top:36px}
+.wc{flex:none;width:300px;height:220px;background:#fff;border-radius:22px;padding:26px;box-shadow:0 4px 20px rgba(0,0,0,.04);display:flex;flex-direction:column;gap:12px}
+.wc .ii{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:20px;color:#fff}
+.wc h4{margin:0;font:600 20px/1.2 var(--disp);letter-spacing:-.02em}
+.wc p{margin:0;font-size:14px;color:var(--sub)}
+.foot{font-size:12px;color:var(--sub);padding:20px 0;border-top:1px solid var(--line)}
+</style></head><body>
+<div class="gnav"><b>MY<i>Future</i>Jobs</b><span>Jobs</span><span>AI Match</span><span>Career Journey</span><span>Career Fair</span><span>MYCEC</span><span>Training</span><span>Insight</span><span>Employers</span><span>⌕</span><span>Sign in</span></div>
+<div class="w">
+  <div class="top">
+    <h1><span>Find work.</span><br><span>Grow skills.</span><br><span>Get hired.</span></h1>
+    <div><p>Everything Malaysia's jobseekers need, from your first search to your first day. Free, and protected by PERKESO.</p>
+      <div class="search"><span>⌕&nbsp; Job title, skill or company</span><span style="flex:.55">All states ⌄</span><b>Search</b></div></div>
+  </div>
+  <div class="bento">
+    <div class="t ai c5 r3"><div class="k">AI Job Recommendation <i>↗</i></div><h3>Upload your resume.<br>Get your Top 10.</h3><div class="drop">⇪ Drop resume here · PDF, DOCX</div>
+      <div class="mini"><div class="r">Data Analyst<b>98%</b></div><div class="r">Business Analyst<b>92%</b></div><div class="r">Cloud Support Engineer<b>85%</b></div></div></div>
+    <div class="t c4 r2"><div class="k">Trending Jobs <i>↗</i></div><h3>Top 10 industries</h3><div class="bars"><i class="h" style="height:100%"></i><i style="height:72%"></i><i style="height:60%"></i><i style="height:52%"></i><i style="height:47%"></i><i style="height:38%"></i><i style="height:32%"></i><i style="height:25%"></i><i style="height:22%"></i><i style="height:17%"></i></div></div>
+    <div class="t dark c3 r2"><div class="k">Career Fair <i>↗</i></div><div class="big" style="margin-top:14px">28<span style="font-size:22px;color:var(--orange);letter-spacing:.1em;margin-left:6px">NOV</span></div><div style="margin-top:8px;font-weight:600">Career Carnival<br>Kuala Lumpur</div><div class="arrow">Register ›</div></div>
+    <div class="t c4"><div class="k">Sign In JS <i>↗</i></div><h3 style="font-size:22px">Welcome back.</h3><div class="arrow">Go to Jobseeker Portal ›</div></div>
+    <div class="t navy c3"><div class="k">Training <i>↗</i></div><h3 style="font-size:22px">8 courses, most fully funded</h3></div>
+    <div class="t c4 r2"><div class="k">Career Journey <i>↗</i></div><h3>Three paths.<br>One goal.</h3><div class="steps"><span>Student</span><span>Job Seekers</span><span>Informal → Formal</span></div></div>
+    <div class="t c4 r2"><div class="k">MYCEC <i>↗</i></div><h3>Meet a coach.<br>Your way.</h3><div class="seg"><span class="on">Physical</span><span>Metaverse</span></div></div>
+    <div class="t c4 r2 dark"><div class="k">MYFutureJobs Insight <i>↗</i></div><h3>Know the market.</h3><div class="list" style="margin-top:auto"><div>Median wage<span>RM 2,745</span></div><div>New vacancies<span>▲ 6.8%</span></div><div>Unemployment<span>3.1%</span></div></div></div>
+    <div class="t c7"><div class="k">Collaboration <i>↗</i></div><div class="logos"><span style="color:#0E2A5C">PROWIRA</span><span style="color:#00A651">Grab</span><span style="color:#1F5FC4">GLC & GLIC</span><span style="color:#E4002B">Carsome</span></div></div>
+    <div class="t c5"><div class="k">General / Initiatives <i>↗</i></div><div class="steps"><span>REPP</span><span>Lindung Kerjaya</span><span>Budget 2026</span></div></div>
+  </div>
+</div>
+
+<section class="cmp"><div class="w">
+  <h2>Which path is right for you?</h2><div class="sub">Compare all Career Journey paths ›</div>
+  <div class="cols">
+    <div class="col"><div class="icon" style="background:linear-gradient(160deg,#FFD39A,#F7941D)"></div><h3>Student</h3><div class="tag">For school leavers, students and fresh graduates.</div><span class="btn">Start</span><span class="lnk">Learn more ›</span>
+      <div class="feat"><div><b>3</b><span>programmes: CareerPathway, CLP, CEP</span></div><div><b>Campus</b><span>to career planning</span></div><div><b>Free</b><span>for all students</span></div></div></div>
+    <div class="col"><div class="icon" style="background:linear-gradient(160deg,#8FB4F5,#1F5FC4)"></div><h3>Job Seekers</h3><div class="tag">For anyone looking for work right now.</div><span class="btn">Start</span><span class="lnk">Learn more ›</span>
+      <div class="feat"><div><b>AI</b><span>job matching from your resume</span></div><div><b>6</b><span>MYCEC centres + metaverse</span></div><div><b>312K</b><span>live vacancies</span></div></div></div>
+    <div class="col"><div class="icon" style="background:linear-gradient(160deg,#7FD8C4,#0E7C86)"></div><h3>Informal to Formal</h3><div class="tag">For gig, freelance and self-employed workers.</div><span class="btn">Start</span><span class="lnk">Learn more ›</span>
+      <div class="feat"><div><b>Skills</b><span>assessed and recognised</span></div><div><b>EPF + SOCSO</b><span>protection in a formal job</span></div><div><b>Galaxy</b><span>learning space</span></div></div></div>
+  </div>
+</div></section>
+
+<section class="why"><div class="w">
+  <h2>Why MYFutureJobs. <span>The best place to find work.</span></h2>
+  <div class="rail">
+    <div class="wc"><div class="ii" style="background:var(--orange)">✦</div><h4>AI picks jobs that fit your skills.</h4><p>No more scrolling through hundreds of listings.</p></div>
+    <div class="wc"><div class="ii" style="background:var(--blue)">✓</div><h4>Every employer is verified.</h4><p>Registered with SSM and PERKESO.</p></div>
+    <div class="wc"><div class="ii" style="background:var(--ok)">RM</div><h4>Free for jobseekers. Always.</h4><p>No fees to search, apply or attend fairs.</p></div>
+    <div class="wc"><div class="ii" style="background:var(--navy)">⛨</div><h4>Protected if you lose your job.</h4><p>Lindung Kerjaya and REPP support.</p></div>
+  </div>
+  <div class="foot" style="margin-top:80px">Concept C · Bento Home — mockup only. Sample data.</div>
+</div></section>
+</body></html>
